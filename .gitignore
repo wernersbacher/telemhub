@@ -1,0 +1,8 @@
+telem/
+.idea/
+__pycache__/
+*.pyc
+
+
+*.ld
+*.ldx
