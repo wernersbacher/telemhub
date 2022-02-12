@@ -43,7 +43,7 @@ def register():
         user.set_pass(form.password.data)
 
         db.session.add(user)
-        os.makedirs(current_app.config.get.config['UPLOADS'] + "/" + form.username.data)
+        os.makedirs(current_app.config.get('UPLOADS') + "/" + form.username.data)
         db.session.commit()
         return redirect(url_for('userspace.login'))
 
