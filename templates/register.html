@@ -3,6 +3,8 @@
 
 {% block content %}
 
+Register for free, so you can upload telemetry! No email activation necessary.
+
 {% from "_formhelpers.html" import render_field %}
 <form method=post>
     <dl>
@@ -11,7 +13,7 @@
         {{ render_field(form.password) }}
         {{ render_field(form.confirm) }}
         {{ render_field(form.accept_tos) }}
-        {{ render_field(form.confirm) }}
+        {{ render_field(form.submit) }}
     </dl>
 
 </form>

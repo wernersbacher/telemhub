@@ -3,21 +3,13 @@
 
 {% block content %}
 
-<h1>INDEX</h1>
+
 
 {% if current_user.is_authenticated %}
-<h3>{{ current_user.username }}</h3>
-
+Welcome back, {{ current_user.username }}
 {% endif %}
-
-{% if current_user.is_authenticated %}
-
-<a href="/upload">home</a><br>
-<a href="/logout">logout</a><br>
-{% else %}
-<a href="/login">login</a><br>
-<a href="/register">register</a><br>
-{% endif %}
+<br/>
+here you can upload and download Telemetry data bla bla
 
 
 {% endblock %}

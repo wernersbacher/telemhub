@@ -1,0 +1,3 @@
+- cookies?
+- captcha
+- file check

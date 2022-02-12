@@ -3,16 +3,11 @@ from database import db
 from flask_login import login_user, logout_user
 from forms.auth import RegistrationForm, LoginForm
 from models.models import User
-from flask_login import current_user, login_required
+from flask_login import login_required
 
 import os
 
 userspace = Blueprint("userspace", __name__)
-
-
-@userspace.before_request
-def before_request():
-    g.user = current_user
 
 
 @userspace.route('/login', methods=['GET', 'POST'])

@@ -15,12 +15,29 @@
           <li class="nav-item">
             <a class="nav-link"  href="{{ url_for('main.index')}}">Home</a>
           </li>
+          {% if current_user.is_authenticated %}
+
+          <li class="nav-item">
+            <a class="nav-link"  href="{{ url_for('main.upload')}}">Upload</a>
+          </li>
+
+          {% endif %}
 
 
 
         </ul>
         <span class="navbar-text">
-            Hallo
+          {% if current_user.is_authenticated %}
+
+            {{ current_user.username }} |
+            <a href="{{ url_for('userspace.logout')}}">Logout</a>
+
+          {% else %}
+
+          <a href="{{ url_for('userspace.login')}}">Login</a> |
+          <a href="{{ url_for('userspace.register')}}">Register</a>
+
+          {% endif %}
         </span>
     </nav>
 
