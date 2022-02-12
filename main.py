@@ -1,12 +1,11 @@
+import os
+from itertools import groupby
+
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 import ldparser as ldp
-import os
-import sys, os, glob
-from itertools import groupby
-import pandas as pd
-import matplotlib.pyplot as plt
-
 import telemetry
 
 CUR_DIR = os.path.dirname(__file__)
