@@ -5,3 +5,4 @@ matplotlib
 Flask-Migrate
 SQLAlchemy
 Flask-SQLAlchemy
+Flask-WTF

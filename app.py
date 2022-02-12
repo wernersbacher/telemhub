@@ -3,9 +3,10 @@ import os
 
 from flask_migrate import Migrate
 
-from models.models import db
+from database import db
 
-from routes.index import main
+from routes.main import main
+from routes.userspace import userspace
 
 
 CURPATH = os.path.abspath(os.path.dirname(__file__))
@@ -14,10 +15,13 @@ CURPATH = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(CURPATH, 'app.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+app.config['UPLOADS'] = os.path.join(CURPATH, 'data/files')
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
 
 app.register_blueprint(main)
+app.register_blueprint(userspace)
 
 
 if __name__ == '__main__':
