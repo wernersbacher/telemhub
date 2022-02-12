@@ -3,6 +3,7 @@ telem/
 __pycache__/
 *.pyc
 
+*.db
 
 *.ld
 *.ldx
