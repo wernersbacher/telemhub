@@ -6,3 +6,5 @@ Flask-Migrate
 SQLAlchemy
 Flask-SQLAlchemy
 Flask-WTF
+flask-login
+email_validator

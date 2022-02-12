@@ -1,10 +1,10 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from loginmanager import login_manager
 from database import db
+from flask_login import UserMixin
 
-
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
@@ -39,3 +39,9 @@ class File(db.Model):
 class Car(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     internal_name = db.Column(db.String(50), nullable=False)
+
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))

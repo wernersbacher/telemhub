@@ -1,42 +1,43 @@
-from flask import render_template, session, url_for, redirect, request, Blueprint, current_app
-#from auth.checks import is_logged_in
+from flask import render_template, g, url_for, redirect, request, Blueprint, current_app
 from database import db
-
-from forms.auth import RegistrationForm
+from flask_login import login_user, logout_user
+from forms.auth import RegistrationForm, LoginForm
 from models.models import User
+from flask_login import current_user, login_required
 
 import os
 
 userspace = Blueprint("userspace", __name__)
 
 
+@userspace.before_request
+def before_request():
+    g.user = current_user
+
+
 @userspace.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':  # only show form
-        return render_template('login.html')
+    form = LoginForm(request.form)
 
-    username = request.form.get('usrname', False)
-    if not username:
-        return "Please fill username!"
-    password = request.form.get('psswd', False)
-    if not password:
-        return "Please fill password!"
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        return "Invalid Username!"
-    if not user.check_pass(password):
-        return "Invalid Password!"
-    session['userID'] = user.id
-    return "1"
+    if request.method == 'POST' and form.validate():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user is not None and user.check_pass(form.password.data):
+            login_user(user)
+            redirect_url = request.args.get('next') or url_for('main.index')
+            return redirect(redirect_url)
+
+    return render_template('login.html', form=form)
+
+
+@userspace.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('main.index'))
 
 
 @userspace.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm(request.form)
-
-    if request.method == 'GET':  # only show form
-
-        return render_template('register.html', form=form)
 
     if request.method == 'POST' and form.validate():
         user = User(username=form.username.data, email=form.email.data)
