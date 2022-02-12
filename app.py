@@ -1,15 +1,23 @@
-from flask import Flask, render_template
+from flask import Flask
 import os
+
+from flask_migrate import Migrate
+
+from models.models import db
+
+from routes.index import main
+
 
 CURPATH = os.path.abspath(os.path.dirname(__file__))
 
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(CURPATH, 'app.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
+migrate = Migrate(app, db)
 
-
-@app.route('/')
-def index():
-    return render_template('index.html')
+app.register_blueprint(main)
 
 
 if __name__ == '__main__':
