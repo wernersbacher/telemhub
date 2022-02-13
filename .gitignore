@@ -3,7 +3,8 @@ data/
 .idea/
 __pycache__/
 *.pyc
-
+venv/
+env/
 *.db
 
 *.ld

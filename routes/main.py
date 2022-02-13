@@ -57,12 +57,17 @@ def upload():
 
             # only save file if corresponding file (ld/ldx) exists
             if file_name_base in files_ldx and files_ld:
-                uploaded_files.append(file_name)
-                print(f"trying to save file to ")
-                file.save(current_user.get_telemetry_path())
+                path = os.path.join(*(current_user.get_telemetry_path(), file_name))  # super weird tuple workaround
+
+                if os.path.isfile(path):
+                    flash(f"You have uploaded the file {file_name} already!", category="warning")
+                else:
+                    uploaded_files.append(file_name)
+                    print(f"trying to save file to {path}")
+                    file.save(path)
 
         if uploaded_files:
-            flash("Files were uploaded! Check your telemetry dashboard.")
+            flash("Files were uploaded! Check your telemetry dashboard.", category="success")
         else:
             flash("No files were uploaded, please don't forget to upload both ld and ldx!", category="error")
 

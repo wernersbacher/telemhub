@@ -9,9 +9,11 @@
 
 {% if uploaded_files is defined %}
 Uploaded files:
+<ul>
     {% for file in uploaded_files %}
-    <p>{{ file }} </p>
+    <li>{{ file }} </li>
     {% endfor %}
+</ul>
 {% endif %}
 
 <form class='user' method='post' enctype="multipart/form-data">

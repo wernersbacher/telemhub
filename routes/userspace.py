@@ -17,7 +17,7 @@ def login():
         if user is not None and user.check_pass(form.password.data):
             login_user(user)
             redirect_url = request.args.get('next') or url_for('main.home')
-            flash('You were successfully logged in.')
+            flash('You were successfully logged in.', category="success")
             return redirect(redirect_url)
 
     return render_template('login.html', form=form)
@@ -26,7 +26,7 @@ def login():
 @userspace.route('/logout')
 def logout():
     logout_user()
-    flash("Logged out, see you soon.")
+    flash("Logged out, see you soon.", category="success")
     return redirect(url_for('main.home'))
 
 
