@@ -1,8 +1,11 @@
+from flask import current_app
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from loginmanager import login_manager
 from database import db
 from flask_login import UserMixin
+import os
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -18,6 +21,9 @@ class User(UserMixin, db.Model):
     def check_pass(self, password):
         return check_password_hash(self.pass_hash, password)
 
+    def get_telemetry_path(self):
+        return os.path.join(current_app.config.get('UPLOADS'), str(self.username))
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
@@ -29,17 +35,16 @@ class File(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     car_id = db.Column(db.Integer, db.ForeignKey('car.id'))
 
-
     fastest_lap_time = db.Column(db.Float)
     likes = db.Column(db.Integer)
 
     def __repr__(self):
         return '<File {}>'.format(self.filename)
 
+
 class Car(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     internal_name = db.Column(db.String(50), nullable=False)
-
 
 
 @login_manager.user_loader

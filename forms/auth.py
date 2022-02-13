@@ -1,10 +1,11 @@
 from wtforms import Form, BooleanField, StringField, PasswordField, validators, EmailField, SubmitField
+from wtforms_validators import AlphaNumeric
 
 from models.models import User
 
 
 class RegistrationForm(Form):
-    username = StringField('Username', [validators.Length(min=4, max=25)])
+    username = StringField('Username', [validators.Length(min=4, max=25), AlphaNumeric()])
     email = EmailField('Email address', [validators.DataRequired(), validators.Email()])
     password = PasswordField('New Password', [
         validators.DataRequired(),

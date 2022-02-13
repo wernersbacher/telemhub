@@ -4,8 +4,22 @@
 
 {% block content %}
 
+{% from "_formhelpers.html" import render_field, render_multi_upload %}
 
-Upload new files here.
+
+{% if uploaded_files is defined %}
+Uploaded files:
+    {% for file in uploaded_files %}
+    <p>{{ file }} </p>
+    {% endfor %}
+{% endif %}
+
+<form class='user' method='post' enctype="multipart/form-data">
+    <dl>
+        {{ render_field(form.files, cls="file-upload", errcls="isinvalid")  }}
+        {{ render_field(form.submit, cls="btn btn-primary btn-user btn-block") }}
+    </dl>
+</form>
 
 
 {% endblock %}

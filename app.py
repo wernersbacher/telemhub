@@ -20,7 +20,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(CURPATH, 'ap
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['html_base_path'] = os.path.join(app.static_url_path, '')
 
-app.config['UPLOADS'] = os.path.join(CURPATH, 'data/files')
+app.config['UPLOADS'] = os.path.join(CURPATH, 'data', 'files')
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
 

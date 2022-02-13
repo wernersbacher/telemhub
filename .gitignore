@@ -1,4 +1,5 @@
 telem/
+data/
 .idea/
 __pycache__/
 *.pyc
