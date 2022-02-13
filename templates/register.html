@@ -1,19 +1,26 @@
-{% extends "layout.html" %}
+{% extends "_register.html" %}
 {% block title %} Register {% endblock %}
+
+
+{% from "_formhelpers.html" import render_field, render_checkbox %}
 
 {% block content %}
 
-Register for free, so you can upload telemetry! No email activation necessary.
+<div class="text-center mb-4">
+    Register for free, so you can upload telemetry! No email activation necessary.
 
-{% from "_formhelpers.html" import render_field %}
-<form method=post>
+</div>
+
+
+<form class='user' method=post>
     <dl>
-        {{ render_field(form.username) }}
-        {{ render_field(form.email) }}
-        {{ render_field(form.password) }}
-        {{ render_field(form.confirm) }}
-        {{ render_field(form.accept_tos) }}
-        {{ render_field(form.submit) }}
+        {{ render_field(form.username, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your new username")  }}
+        {{ render_field(form.email, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your Email")  }}
+        {{ render_field(form.password, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your Password")  }}
+        {{ render_field(form.confirm, cls="form-control form-control-user", errcls="isinvalid", placeholder="Repeat it!")  }}
+        {{ render_checkbox(form.accept_tos, label="I am accepting the TOS.") }}
+
+        {{ render_field(form.submit, cls="btn btn-primary btn-user btn-block") }}
     </dl>
 
 </form>

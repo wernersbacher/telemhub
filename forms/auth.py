@@ -20,7 +20,19 @@ class RegistrationForm(Form):
     def validate(self, extra_validators=None):
         initial_validation = super(RegistrationForm, self).validate()
         if not initial_validation:
+            print("inital validation failed")
             return False
+
+        if self.password.data != self.confirm.data:
+            self.password.errors.append("Passwords do not match!")
+            print("pw fail1")
+            return False
+
+        if len(self.password.data) < 7:
+            self.password.errors.append("Password is shorter than 6 chars!")
+            print("pw fail 2")
+            return False
+
         user = User.query.filter_by(username=self.username.data).first()
         if user:
             self.username.errors.append("Username already registered")

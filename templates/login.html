@@ -1,16 +1,30 @@
-{% extends "layout.html" %}
+{% extends "_login.html" %}
 {% block title %} Login {% endblock %}
 
 {% block content %}
 
 {% from "_formhelpers.html" import render_field %}
-<form method=post>
-    <dl>
-        {{ render_field(form.email) }}
-        {{ render_field(form.password) }}
-        {{ render_field(form.submit) }}
-    </dl>
+
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="mb-4">
+    {% for message in messages %}
+    <div class="alert alert-primary">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<form class="user" method="post">
+
+    {{ render_field(form.email, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your Email") }}
+    {{ render_field(form.password, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your Password") }}
+    {{ render_field(form.submit, cls="btn btn-primary btn-user btn-block", errcls="isinvalid") }}
+
+
 </form>
+
 
 {% endblock %}
 

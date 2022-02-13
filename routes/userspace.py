@@ -1,4 +1,4 @@
-from flask import render_template, g, url_for, redirect, request, Blueprint, current_app
+from flask import render_template, url_for, redirect, request, Blueprint, current_app, flash
 from database import db
 from flask_login import login_user, logout_user
 from forms.auth import RegistrationForm, LoginForm
@@ -19,6 +19,7 @@ def login():
         if user is not None and user.check_pass(form.password.data):
             login_user(user)
             redirect_url = request.args.get('next') or url_for('main.index')
+            flash('You were successfully logged in.')
             return redirect(redirect_url)
 
     return render_template('login.html', form=form)
@@ -41,6 +42,7 @@ def register():
         db.session.add(user)
         os.makedirs(current_app.config.get('UPLOADS') + "/" + form.username.data)
         db.session.commit()
+        flash('Registration completed, you can now log in!')
         return redirect(url_for('userspace.login'))
 
     return render_template('register.html', form=form)

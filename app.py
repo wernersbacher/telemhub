@@ -18,6 +18,7 @@ app = Flask(__name__)
 app.secret_key = b'j3nr#+38f8fdeadbeef--w'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(CURPATH, 'app.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['html_base_path'] = os.path.join(app.static_url_path, '')
 
 app.config['UPLOADS'] = os.path.join(CURPATH, 'data/files')
 db.init_app(app)
