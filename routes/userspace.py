@@ -18,7 +18,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user is not None and user.check_pass(form.password.data):
             login_user(user)
-            redirect_url = request.args.get('next') or url_for('main.index')
+            redirect_url = request.args.get('next') or url_for('main.home')
             flash('You were successfully logged in.')
             return redirect(redirect_url)
 

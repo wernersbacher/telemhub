@@ -7,8 +7,13 @@ main = Blueprint("main", __name__)
 
 
 @main.route('/')
-def index():
+def home():
     return render_template('index.html')
+
+
+@main.route('/telemetry')
+def telemetry():
+    return render_template('telemetry.html')
 
 
 @main.route('/upload')

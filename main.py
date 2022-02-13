@@ -52,7 +52,7 @@ for file in list_files():
     """ Problem: Die Daten sind nach zeit, nicht nach distanz konstruiert"""
 
     print(ds.laps_times)
-    fastest_lap_ix = ds.laps_times.index(min(ds.laps_times))
+    fastest_lap_ix = ds.laps_times.home(min(ds.laps_times))
     print(fastest_lap_ix)
     fastest_lap = ds.get_data_frame(lap=fastest_lap_ix)
     print(fastest_lap.keys())
