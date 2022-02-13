@@ -16,12 +16,16 @@ def home():
 
 @main.route('/telemetry')
 def telemetry():
+
+
     return render_template('telemetry.html')
 
 
+
+
+
+
 ALLOWED_EXTENSIONS = {'ld', "ldx"}
-
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

@@ -41,27 +41,30 @@ def plot_file_debug(file_path):
 for file in list_files():
     #plot_file_debug(file)
 
-    head_, chans = ldp.read_ldfile(file)
+    head, chans = ldp.read_ldfile(file)
+    print(type(head))
+    print(head.venue)
+    print(head.event)
 
     # read laps from xml files
     laps = np.array(telemetry.laps(file))
 
     # create DataStore that is used later to get pandas DataFrame
-    ds = telemetry.LDDataStore(chans, laps, acc=head_.event != 'AC_LIVE')
+    ds = telemetry.LDDataStore(chans, laps, freq=10, acc=head.event != 'AC_LIVE')
 
     """ Problem: Die Daten sind nach zeit, nicht nach distanz konstruiert"""
 
     print(ds.laps_times)
-    fastest_lap_ix = ds.laps_times.home(min(ds.laps_times))
-    print(fastest_lap_ix)
+    fastest_lap_time = min(ds.laps_times)
+    print(f"fastest lap was {fastest_lap_time}")
+    fastest_lap_ix = ds.laps_times.index(fastest_lap_time)
+    #print(fastest_lap_ix)
     fastest_lap = ds.get_data_frame(lap=fastest_lap_ix)
-    print(fastest_lap.keys())
-    print(fastest_lap[["speedkmh", "dist_lap", "time_lap"]])
+    #print(fastest_lap.keys())
+    #print(fastest_lap[["speedkmh", "dist_lap", "time_lap"]])
 
     #fastest_lap[["speedkmh", "throttle", "brake"]].plot()
     #plt.show()
-
-
 
 
 print("Done")

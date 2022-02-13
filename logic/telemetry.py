@@ -120,10 +120,10 @@ class DataStore(object):
 
 
 class LDDataStore(DataStore):
-    def __init__(self, channs, laps, acc=True):
+    def __init__(self, channs, laps, freq=20, acc=True):
         self.channs = channs
         self.acc = acc
-        self.freq = 20
+        self.freq = freq
         self.n = self.freq * len(self.channs[0].data) // self.channs[0].freq
         self.columns = {}
         self._df = None
