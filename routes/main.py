@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, render_template, current_app, request, flash, url_for
+from flask import Blueprint, render_template, current_app, request, flash, url_for, send_from_directory
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename, redirect
 from executor import executor
@@ -40,6 +40,20 @@ def telemetry_show(id):
     return render_template("telemetry_show.html", file=file)
 
 
+@main.route("/telemetry/download/<id>")
+def download_telem(id):
+    file = db.session.query(File).filter_by(id=id).first()
+    if file is None:
+        flash("Sorry, this telemetry doesn't exist (anymore)!", category="error")
+        return redirect(url_for('main.home'))
+
+    try:
+        return send_from_directory(current_user.get_telemetry_path(), path=file.filename + ".zip", as_attachment=True)
+    except FileNotFoundError:
+        flash("Sorry, this telemetry doesn't exist (anymore)!", category="error")
+        return redirect(url_for('main.home'))
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -49,6 +63,7 @@ def allowed_file(filename):
 @login_required
 def upload():
     form = TelemUploadForm()
+    readme_path = os.path.join(current_app.config.get("UPLOADS"), "readme.txt")
     uploaded_files = []  # actual saved on db
     task_list = []
 
@@ -73,8 +88,9 @@ def upload():
             if file_name_base in files_ldx and files_ld:
                 full_file_path = os.path.join(
                     *(current_user.get_telemetry_path(), file_name))  # super weird tuple workaround
+                zip_file_path = os.path.splitext(full_file_path)[0] + ".zip"
 
-                if os.path.isfile(full_file_path):
+                if os.path.isfile(zip_file_path):
                     flash(f"You have uploaded the file {file_name} already!", category="warning")
                 else:
                     uploaded_files.append(file_name)
@@ -82,7 +98,7 @@ def upload():
                     file.save(full_file_path)
 
                     if file_name.endswith(".ld"):
-                        task_list.append((process_upload, full_file_path, current_user))
+                        task_list.append((process_upload, full_file_path, current_user, readme_path))
 
         # only process data after upload; otherwise errors may appear?
         if task_list:

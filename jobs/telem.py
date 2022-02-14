@@ -1,4 +1,7 @@
 import contextlib
+import zipfile
+from os.path import basename
+
 from sqlalchemy.exc import IntegrityError
 from models.models import User, File, Car, Track
 from logic import telemetry
@@ -9,12 +12,13 @@ import os
 import traceback
 
 
-def process_upload(file_path: str, user: User):
+def process_upload(file_path: str, user: User, readme_path: str):
     print(f"processing file {file_path} in background from user {user.username}")
-    path_only, file_name = os.path.split(file_path)
-    file_name, file_ext = os.path.splitext(file_name)
+    path_only, file_name_with_ext = os.path.split(file_path)
+    file_name, file_ext = os.path.splitext(file_name_with_ext)
     parquet_path = os.path.join(path_only, f"{file_name}.parquet")
     ldx_path = os.path.splitext(file_path)[0] + ".ldx"
+    zip_path = os.path.splitext(file_path)[0] + ".zip"
 
     head, chans = ldp.read_ldfile(file_path)
     # print(type(head))
@@ -86,3 +90,19 @@ def process_upload(file_path: str, user: User):
             os.remove(file_path)
             os.remove(ldx_path)
             os.remove(parquet_path)
+        return
+
+    # if everything worked well, create zip file
+    with zipfile.ZipFile(zip_path, 'w') as zipF:
+        zipF.write(file_path, basename(file_path), compress_type=zipfile.ZIP_DEFLATED)
+        zipF.write(ldx_path, basename(ldx_path), compress_type=zipfile.ZIP_DEFLATED)
+        print(f"now adding readme file {readme_path}")
+        try:
+            zipF.write(readme_path, basename(readme_path), compress_type=zipfile.ZIP_DEFLATED)
+        except BaseException:
+            print(traceback.format_exc())
+
+
+    # now delete big raw files!
+    os.remove(file_path)
+    os.remove(ldx_path)

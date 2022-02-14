@@ -19,10 +19,13 @@
         <dt class="col-sm-2">UPLOADER</dt>
         <dd class="col-sm-9">{{ file.owner.username }}</dd>
 
+        <dt class="col-sm-2">UPLOADED ON</dt>
+        <dd class="col-sm-9">{{ file.get_upload_date() }}</dd>
+
     </dl>
 
     <dl class="row">
-        DOWNLOAD HERE
+        <a class="btn btn btn-success" href="{{ url_for('main.download_telem', id=file.id) }}" role="button">DOWNLOAD TELEMETRY</a>
 
     </dl>
 
