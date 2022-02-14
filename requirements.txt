@@ -11,3 +11,4 @@ email_validator
 wtforms-validators
 flask-executor
 fastparquet
+plotly

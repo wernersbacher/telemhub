@@ -29,9 +29,17 @@
 
     </dl>
 
-
-
 </div>
+
+<div class="mb-4 w-100 p-3">
+    <div id="vplot" class="vplot"></div>
+</div>
+
+<script type="text/javascript">
+  var vplot = {{ vplot | safe }};
+  Plotly.plot('vplot', vplot, {});
+
+</script>
 
 
 {% endblock %}

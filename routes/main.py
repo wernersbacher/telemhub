@@ -1,4 +1,6 @@
 import os
+
+import pandas as pd
 from flask import Blueprint, render_template, current_app, request, flash, url_for, send_from_directory
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename, redirect
@@ -6,7 +8,7 @@ from executor import executor
 from jobs.telem import process_upload
 from forms.uploads import TelemUploadForm
 from database import db
-
+from logic.plot import create_telem_plot
 from models.models import File
 
 main = Blueprint("main", __name__)
@@ -37,7 +39,15 @@ def telemetry_show(id):
         flash("Sorry, this telemetry doesn't exist (anymore)!", category="error")
         return redirect(url_for('main.home'))
 
-    return render_template("telemetry_show.html", file=file)
+    # load fastest lap from disk
+    parquet_path = os.path.join(file.owner.get_telemetry_path(), file.filename + ".parquet")
+
+    df = pd.read_parquet(parquet_path)
+
+    print(df)
+    vplot = create_telem_plot(df)
+
+    return render_template("telemetry_show.html", file=file, vplot=vplot)
 
 
 @main.route("/telemetry/download/<id>")
@@ -48,7 +58,7 @@ def download_telem(id):
         return redirect(url_for('main.home'))
 
     try:
-        return send_from_directory(current_user.get_telemetry_path(), path=file.filename + ".zip", as_attachment=True)
+        return send_from_directory(file.owner.get_telemetry_path(), path=file.filename + ".zip", as_attachment=True)
     except FileNotFoundError:
         flash("Sorry, this telemetry doesn't exist (anymore)!", category="error")
         return redirect(url_for('main.home'))

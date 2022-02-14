@@ -29,7 +29,7 @@ def process_upload(file_path: str, user: User, readme_path: str):
     laps = np.array(telemetry.laps(file_path))
 
     # create DataStore that is used later to get pandas DataFrame
-    ds = telemetry.LDDataStore(chans, laps, freq=10, acc=head.event != 'AC_LIVE')
+    ds = telemetry.LDDataStore(chans, laps, freq=20, acc=head.event != 'AC_LIVE')
 
     # print(ds.laps_times)
     fastest_lap_time = min(ds.laps_times)
@@ -76,7 +76,7 @@ def process_upload(file_path: str, user: User, readme_path: str):
 
     # -------------------------------- FILE
     # print("saving telemetry file to db...")
-    fastest_lap[["speedkmh", "dist_lap", "time_lap"]].to_parquet(path=parquet_path, index=True)
+    fastest_lap[["speedkmh", "throttle", "brake", "dist_lap", "time_lap"]].to_parquet(path=parquet_path, index=True)
 
     try:
         print(f"writing file to database SUCEEDED, {file_path}")

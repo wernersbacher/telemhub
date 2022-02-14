@@ -1,3 +1,6 @@
 - cookies?
 - captcha
-- file check
+
+- profile settings, email, passwort vergessen
+
+- throttle und brakes hinzufügen
