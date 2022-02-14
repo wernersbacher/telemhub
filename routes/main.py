@@ -3,6 +3,8 @@ import os
 from flask import Blueprint, render_template, current_app, request, flash
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
+from executor import executor
+from jobs.telem import process_upload
 
 from forms.uploads import TelemUploadForm
 
@@ -38,10 +40,8 @@ def upload():
     uploaded_files = []  # actual saved on db
 
     files = request.files.getlist("files")
-    print()
 
     if request.method == 'POST' and form.validate() and files:
-        print("verarbeite daten..")
         # get file names for ld and ldx files
         files_ld = [os.path.splitext(secure_filename(file.filename))[0]
                     for file in files
@@ -51,9 +51,6 @@ def upload():
                      for file in files
                      if secure_filename(file.filename).endswith("ldx")]
 
-        print(files_ld)
-        print(files_ldx)
-
         # check all files again
         for file in files:
             file_name = secure_filename(file.filename)
@@ -61,14 +58,17 @@ def upload():
 
             # only save file if corresponding file (ld/ldx) exists
             if file_name_base in files_ldx and files_ld:
-                path = os.path.join(*(current_user.get_telemetry_path(), file_name))  # super weird tuple workaround
+                full_file_path = os.path.join(*(current_user.get_telemetry_path(), file_name))  # super weird tuple workaround
 
-                if os.path.isfile(path):
+                if os.path.isfile(full_file_path):
                     flash(f"You have uploaded the file {file_name} already!", category="warning")
                 else:
                     uploaded_files.append(file_name)
-                    print(f"trying to save file to {path}")
-                    file.save(path)
+                    print(f"saving file to {full_file_path}")
+                    file.save(full_file_path)
+
+                    if file_name.endswith(".ld"):
+                        executor.submit(process_upload, full_file_path, current_user)
 
         if uploaded_files:
             flash("Files were uploaded! Check your telemetry dashboard.", category="success")
