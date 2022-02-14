@@ -10,6 +10,8 @@ import traceback
 def process_upload(file_path: str, user: User):
     print(f"processed file {file_path} in background from user {user.username}")
     path_only, file_name = os.path.split(file_path)
+    file_name, file_ext = os.path.splitext(file_name)
+    parquet_path = os.path.join(path_only, f"{file_name}.parquet")
 
     head, chans = ldp.read_ldfile(file_path)
     print(type(head))
@@ -40,13 +42,15 @@ def process_upload(file_path: str, user: User):
     track = db.session.query(Track.id).filter_by(internal_name=head.venue).first()
     if track is None:
         track = Track(internal_name=head.venue)
+
     try:
-        file = File(owner=user, car=car, track=track, filename=file_name,
-                    fastest_lap_time=fastest_lap_time) #fastest_lap_table=fastest_lap[["speedkmh", "dist_lap", "time_lap"]].to_pickle())
+        fastest_lap[["speedkmh", "dist_lap", "time_lap"]].to_parquet(path=parquet_path, index=True)
+
+        file = File(owner=user, car=car, track=track, filename=file_name, fastest_lap_time=fastest_lap_time)
 
         db.session.add(car)
         db.session.add(track)
         db.session.add(file)
-    except BaseException as e:
+    except:
         print(traceback.format_exc())
     db.session.commit()

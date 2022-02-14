@@ -40,8 +40,6 @@ class File(db.Model):
     fastest_lap_time = db.Column(db.Float)
     likes = db.Column(db.Integer, default=0)
 
-    fastest_lap_table = db.Column(db.PickleType)
-
     def __repr__(self):
         return '<File {}>'.format(self.filename)
 
