@@ -33,10 +33,14 @@ class File(db.Model):
     filename = db.Column(db.String(120), nullable=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
     car_id = db.Column(db.Integer, db.ForeignKey('car.id'))
+    track_id = db.Column(db.Integer, db.ForeignKey('track.id'))
 
     fastest_lap_time = db.Column(db.Float)
-    likes = db.Column(db.Integer)
+    likes = db.Column(db.Integer, default=0)
+
+    fastest_lap_table = db.Column(db.PickleType)
 
     def __repr__(self):
         return '<File {}>'.format(self.filename)
@@ -45,6 +49,15 @@ class File(db.Model):
 class Car(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     internal_name = db.Column(db.String(50), nullable=False)
+    pretty_name = db.Column(db.String(50))
+    files = db.relationship('File', backref='car', lazy='dynamic')
+
+
+class Track(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    internal_name = db.Column(db.String(50), nullable=False)
+    pretty_name = db.Column(db.String(50))
+    files = db.relationship('File', backref='track', lazy='dynamic')
 
 
 @login_manager.user_loader
