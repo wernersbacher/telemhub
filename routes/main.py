@@ -1,14 +1,18 @@
 import os
-
-from flask import Blueprint, render_template, current_app, request, flash
+from flask import Blueprint, render_template, current_app, request, flash, url_for
 from flask_login import login_required, current_user
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename, redirect
 from executor import executor
 from jobs.telem import process_upload
-
 from forms.uploads import TelemUploadForm
+from database import db
+
+from models.models import File
 
 main = Blueprint("main", __name__)
+
+ROWS_PER_PAGE = 10
+ALLOWED_EXTENSIONS = {'ld', "ldx"}
 
 
 @main.route('/')
@@ -18,16 +22,24 @@ def home():
 
 @main.route('/telemetry')
 def telemetry():
+    page = request.args.get('page', 1, type=int)
+
+    files = db.session.query(File).paginate(page=page, per_page=ROWS_PER_PAGE)
+
+    return render_template('telemetry.html', files=files)
 
 
-    return render_template('telemetry.html')
+@main.route("/telemetry/show/<id>")
+def telemetry_show(id):
+    print("Trying to load id")
+    file = db.session.query(File).filter_by(id=id).first()
+    if file is None:
+        flash("Sorry, this telemetry doesn't exist (anymore)!", category="error")
+        return redirect(url_for('main.home'))
+
+    return render_template("telemetry_show.html", file=file)
 
 
-
-
-
-
-ALLOWED_EXTENSIONS = {'ld', "ldx"}
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -58,7 +70,8 @@ def upload():
 
             # only save file if corresponding file (ld/ldx) exists
             if file_name_base in files_ldx and files_ld:
-                full_file_path = os.path.join(*(current_user.get_telemetry_path(), file_name))  # super weird tuple workaround
+                full_file_path = os.path.join(
+                    *(current_user.get_telemetry_path(), file_name))  # super weird tuple workaround
 
                 if os.path.isfile(full_file_path):
                     flash(f"You have uploaded the file {file_name} already!", category="warning")

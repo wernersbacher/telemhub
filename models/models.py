@@ -1,5 +1,5 @@
 from flask import current_app
-from datetime import datetime
+from datetime import datetime, time
 from werkzeug.security import generate_password_hash, check_password_hash
 from loginmanager import login_manager
 from database import db
@@ -34,11 +34,20 @@ class File(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    public = db.Column(db.Boolean, default=True)
+
     car_id = db.Column(db.Integer, db.ForeignKey('car.id'))
     track_id = db.Column(db.Integer, db.ForeignKey('track.id'))
 
     fastest_lap_time = db.Column(db.Float)
     likes = db.Column(db.Integer, default=0)
+
+    def get_fastest_lap(self):
+        ms = int(1000 * (self.fastest_lap_time % 1))*1000
+        seconds = int(self.fastest_lap_time % 60)
+        minutes = int(self.fastest_lap_time // 60)
+        s = str(time(minute=minutes, second=seconds, microsecond=ms).strftime("%M:%S,%f"))
+        return s[:-3]
 
     def __repr__(self):
         return '<File {}>'.format(self.filename)

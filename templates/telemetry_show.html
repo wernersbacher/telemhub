@@ -1,0 +1,35 @@
+{% extends "_dashboard.html" %}
+{% set active_page = "telemetry" %}
+{% block title %} Upload {% endblock %}
+
+{% block content %}
+
+<div class="mb-4 w-100 p-3 d-flex flex-row">
+
+    <dl class="row">
+        <dt class="col-sm-2">TRACK</dt>
+        <dd class="col-sm-9">{{ file.track.internal_name }}</dd>
+
+        <dt class="col-sm-2">CAR</dt>
+        <dd class="col-sm-9">{{ file.car.internal_name }}</dd>
+
+        <dt class="col-sm-2">FASTEST LAP</dt>
+        <dd class="col-sm-9">{{ file.get_fastest_lap() }}</dd>
+
+        <dt class="col-sm-2">UPLOADER</dt>
+        <dd class="col-sm-9">{{ file.owner.username }}</dd>
+
+    </dl>
+
+    <dl class="row">
+        DOWNLOAD HERE
+
+    </dl>
+
+
+
+</div>
+
+
+{% endblock %}
+
