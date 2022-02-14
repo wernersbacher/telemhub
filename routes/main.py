@@ -50,6 +50,7 @@ def allowed_file(filename):
 def upload():
     form = TelemUploadForm()
     uploaded_files = []  # actual saved on db
+    task_list = []
 
     files = request.files.getlist("files")
 
@@ -77,11 +78,16 @@ def upload():
                     flash(f"You have uploaded the file {file_name} already!", category="warning")
                 else:
                     uploaded_files.append(file_name)
-                    print(f"saving file to {full_file_path}")
+                    print(f"saved file to {full_file_path}")
                     file.save(full_file_path)
 
                     if file_name.endswith(".ld"):
-                        executor.submit(process_upload, full_file_path, current_user)
+                        task_list.append((process_upload, full_file_path, current_user))
+
+        # only process data after upload; otherwise errors may appear?
+        if task_list:
+            for task in task_list:
+                executor.submit(*task)
 
         if uploaded_files:
             flash("Files were uploaded! Check your telemetry dashboard.", category="success")

@@ -55,14 +55,14 @@ class File(db.Model):
 
 class Car(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    internal_name = db.Column(db.String(50), nullable=False)
+    internal_name = db.Column(db.String(50), unique=True, nullable=False)
     pretty_name = db.Column(db.String(50))
     files = db.relationship('File', backref='car', lazy='dynamic')
 
 
 class Track(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    internal_name = db.Column(db.String(50), nullable=False)
+    internal_name = db.Column(db.String(50), unique=True, nullable=False)
     pretty_name = db.Column(db.String(50))
     files = db.relationship('File', backref='track', lazy='dynamic')
 

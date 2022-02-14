@@ -129,7 +129,7 @@ class LDDataStore(DataStore):
         self._df = None
         self.laps_limits = laps_limits(laps, self.freq, self.n)
         self.laps_times = laps_times(laps)
-        print('Scaling to %i Hz' % self.freq)
+        # print('Scaling to %i Hz' % self.freq)
 
     def chan_name(self, x):
         if self.acc: return x.name.lower()
