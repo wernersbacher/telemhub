@@ -7,10 +7,32 @@
 {% if files %}
 <div class="mb-4 w-100 p-3">
 
+
+    <form method="get" class="form-inline">
+
+        <select id="carSelect" name="car" class="form-control mb-2 mr-sm-2">
+            <option value="0" {% if selected_car == 0 %}selected{% endif %}>All cars</option>
+            {% for car in cars %}
+            <option value="{{ car.id }}" {% if selected_car == car.id %}selected{% endif %}>{{ car.get_pretty_name() }}</option>
+            {% endfor %}
+        </select>
+
+        <select id="trackSelect" name="track" class="form-control mb-2 mr-sm-2">
+            <option value="0" {% if selected_track == 0 %}selected{% endif %}>All tracks</option>
+            {% for track in tracks %}
+            <option value="{{ track.id }}" {% if selected_track == track.id %}selected{% endif %}>{{ track.get_pretty_name() }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn btn-primary mb-2">Refresh</button>
+    </form>
+
+
+
     <nav aria-label="...">
         <ul class="pagination">
             <li class="page-item {% if files.page == 1 %}disabled{% endif %}">
-                <a href="{{ url_for('main.telemetry', page=files.prev_num) }}"
+                <a href="{{ url_for('main.telemetry', page=files.prev_num, car=selected_car, track=selected_track) }}"
                    class="page-link" tabindex="-1"
                 >Previous</a>
             </li>
@@ -19,11 +41,11 @@
 
             {% if files.page == page_num %}
             <li class="page-item active">
-                <a class="page-link" href="{{ url_for('main.telemetry', page=page_num) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
+                <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
             </li>
             {% else %}
             <li class="page-item">
-                <a class="page-link" href="{{ url_for('main.telemetry', page=page_num) }}">{{ page_num }}</a>
+                <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track) }}">{{ page_num }}</a>
             </li>
             {% endif %}
             {% else %}
@@ -31,7 +53,7 @@
             {% endif %}
             {% endfor %}
             <li class="page-item {% if files.page == files.pages %}disabled{% endif %}">
-                <a class="page-link " href="{{ url_for('main.telemetry', page=files.next_num) }}">Next</a>
+                <a class="page-link " href="{{ url_for('main.telemetry', page=files.next_num, car=selected_car, track=selected_track) }}">Next</a>
             </li>
         </ul>
     </nav>
@@ -67,7 +89,7 @@
     <nav aria-label="...">
         <ul class="pagination">
             <li class="page-item {% if files.page == 1 %}disabled{% endif %}">
-                <a href="{{ url_for('main.telemetry', page=files.prev_num) }}"
+                <a href="{{ url_for('main.telemetry', page=files.prev_num, car=selected_car, track=selected_track) }}"
                    class="page-link" tabindex="-1"
                 >Previous</a>
             </li>
@@ -76,11 +98,11 @@
 
                 {% if files.page == page_num %}
                 <li class="page-item active">
-                    <a class="page-link" href="{{ url_for('main.telemetry', page=page_num) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
+                    <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
                 </li>
                 {% else %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.telemetry', page=page_num) }}">{{ page_num }}</a>
+                    <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track) }}">{{ page_num }}</a>
                 </li>
                 {% endif %}
             {% else %}
@@ -88,7 +110,7 @@
             {% endif %}
             {% endfor %}
             <li class="page-item {% if files.page == files.pages %}disabled{% endif %}">
-                <a class="page-link " href="{{ url_for('main.telemetry', page=files.next_num) }}">Next</a>
+                <a class="page-link " href="{{ url_for('main.telemetry', page=files.next_num, car=selected_car, track=selected_track) }}">Next</a>
             </li>
         </ul>
     </nav>

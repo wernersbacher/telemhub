@@ -1,5 +1,5 @@
 import os
-
+from sqlalchemy import and_
 import pandas as pd
 from flask import Blueprint, render_template, current_app, request, flash, url_for, send_from_directory
 from flask_login import login_required, current_user
@@ -9,7 +9,7 @@ from jobs.telem import process_upload
 from forms.uploads import TelemUploadForm
 from database import db
 from logic.plot import create_telem_plot
-from models.models import File
+from models.models import File, Car, Track
 
 main = Blueprint("main", __name__)
 
@@ -25,10 +25,26 @@ def home():
 @main.route('/telemetry')
 def telemetry():
     page = request.args.get('page', 1, type=int)
+    car_id = request.args.get('car', 0, type=int)
+    track_id = request.args.get('track', 0, type=int)
+    print(car_id, track_id)
 
-    files = db.session.query(File).paginate(page=page, per_page=ROWS_PER_PAGE)
+    filter = []
+    if car_id > 0:
+        filter.append(File.car_id == car_id)
+    if track_id > 0:
+        filter.append(File.track_id == track_id)
 
-    return render_template('telemetry.html', files=files)
+    files = db.session.query(File). \
+        filter(and_(*filter)).\
+        order_by(File.fastest_lap_time).\
+        paginate(page=page, per_page=ROWS_PER_PAGE)
+
+    cars = db.session.query(Car).all()
+    tracks = db.session.query(Track).all()
+
+    return render_template('telemetry.html', files=files, cars=cars, tracks=tracks,
+                           selected_track=track_id, selected_car=car_id)
 
 
 @main.route("/telemetry/show/<id>")
