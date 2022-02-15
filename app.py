@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from database import db
 
 from routes.main import main
+from routes.member import member
 from routes.userspace import userspace
 
 from loginmanager import login_manager
@@ -29,6 +30,7 @@ executor.init_app(app)
 login_manager.init_app(app)
 
 app.register_blueprint(main)
+app.register_blueprint(member)
 app.register_blueprint(userspace)
 
 

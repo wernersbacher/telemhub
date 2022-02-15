@@ -21,6 +21,13 @@ def process_upload(file_path: str, user: User, readme_path: str):
     zip_path = os.path.splitext(file_path)[0] + ".zip"
 
     head, chans = ldp.read_ldfile(file_path)
+
+    if head.event == "AC_LIVE":
+        print("Detected wrong ld file, aborting")
+        os.remove(file_path)
+        os.remove(ldx_path)
+        return
+
     # print(type(head))
     # print(head.venue)  # track
     # print(head.event)  # car

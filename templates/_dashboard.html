@@ -81,9 +81,15 @@
 
         <!-- Nav Item - Charts -->
         <li class="nav-item {{ 'active' if active_page == 'upload' else '' }}">
-            <a class="nav-link" href="{{ url_for('main.upload')}}">
+            <a class="nav-link" href="{{ url_for('member.upload')}}">
                 <i class="bi bi-cloud-plus-fill"></i>
                 <span>Upload</span></a>
+        </li>
+
+        <li class="nav-item {{ 'active' if active_page == 'member_telemetry' else '' }}">
+            <a class="nav-link" href="{{ url_for('member.telemetry')}}">
+                <i class="bi bi-cloud-plus-fill"></i>
+                <span>My Telemetry</span></a>
         </li>
 
 
