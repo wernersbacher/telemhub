@@ -8,63 +8,9 @@
 <div class="mb-4 w-100 p-3">
 
 
-    <form method="get" class="form-inline">
+    {% include 'templates/telem/filter.html' %}
 
-        <select id="carSelect" name="car" class="form-control mb-2 mr-sm-2">
-            <option value="0" {% if selected_car == 0 %}selected{% endif %}>All cars</option>
-            {% for car in cars %}
-            <option value="{{ car.id }}" {% if selected_car == car.id %}selected{% endif %}>{{ car.get_pretty_name() }}</option>
-            {% endfor %}
-        </select>
-
-        <select id="trackSelect" name="track" class="form-control mb-2 mr-sm-2">
-            <option value="0" {% if selected_track == 0 %}selected{% endif %}>All tracks</option>
-            {% for track in tracks %}
-            <option value="{{ track.id }}" {% if selected_track == track.id %}selected{% endif %}>{{ track.get_pretty_name() }}</option>
-            {% endfor %}
-        </select>
-
-        <select id="orderSelect" name="order" class="form-control mb-2 mr-sm-2">
-
-            {% for method in ordermethods %}
-            <option value="{{ method.id }}" {% if method.id == selected_order.id %}selected{% endif %}>{{ method.desc }}</option>
-            {% endfor %}
-
-        </select>
-
-        <button type="submit" class="btn btn-primary mb-2">Refresh</button>
-    </form>
-
-
-
-    <nav aria-label="...">
-        <ul class="pagination">
-            <li class="page-item {% if files.page == 1 %}disabled{% endif %}">
-                <a href="{{ url_for('main.telemetry', page=files.prev_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}"
-                   class="page-link" tabindex="-1"
-                >Previous</a>
-            </li>
-            {% for page_num in files.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-            {% if page_num %}
-
-            {% if files.page == page_num %}
-            <li class="page-item active">
-                <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track, selected_order=selected_order.id.id) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
-            </li>
-            {% else %}
-            <li class="page-item">
-                <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}">{{ page_num }}</a>
-            </li>
-            {% endif %}
-            {% else %}
-            ...
-            {% endif %}
-            {% endfor %}
-            <li class="page-item {% if files.page == files.pages %}disabled{% endif %}">
-                <a class="page-link " href="{{ url_for('main.telemetry', page=files.next_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}">Next</a>
-            </li>
-        </ul>
-    </nav>
+    {% include 'templates/telem/pagination.html' %}
 
 
     <table class="table table-hover">
@@ -72,7 +18,7 @@
         <tr>
             <th scope="col">Track</th>
             <th scope="col">Car</th>
-            <th scope="col">Best time</th>
+            <th scope="col">Fastest Lap</th>
             <th scope="col">Views</th>
             <th scope="col">Uploader</th>
             <th scope="col">Uploaded on</th>
@@ -96,34 +42,8 @@
         </tbody>
     </table>
 
-    <nav aria-label="...">
-        <ul class="pagination">
-            <li class="page-item {% if files.page == 1 %}disabled{% endif %}">
-                <a href="{{ url_for('main.telemetry', page=files.prev_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}"
-                   class="page-link" tabindex="-1"
-                >Previous</a>
-            </li>
-            {% for page_num in files.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-            {% if page_num %}
 
-                {% if files.page == page_num %}
-                <li class="page-item active">
-                    <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
-                </li>
-                {% else %}
-                <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}">{{ page_num }}</a>
-                </li>
-                {% endif %}
-            {% else %}
-            ...
-            {% endif %}
-            {% endfor %}
-            <li class="page-item {% if files.page == files.pages %}disabled{% endif %}">
-                <a class="page-link " href="{{ url_for('main.telemetry', page=files.next_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}">Next</a>
-            </li>
-        </ul>
-    </nav>
+    {% include 'templates/telem/pagination.html' %}
 
     <p class="text-left mt-3">
         Showing page {{ files.page }} of {{ files.pages }}

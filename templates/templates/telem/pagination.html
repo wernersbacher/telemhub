@@ -1,0 +1,28 @@
+<nav aria-label="...">
+  <ul class="pagination">
+    <li class="page-item {% if files.page == 1 %}disabled{% endif %}">
+      <a href="{{ url_for('main.telemetry', page=files.prev_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}"
+         class="page-link" tabindex="-1"
+      >Previous</a>
+    </li>
+    {% for page_num in files.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    {% if page_num %}
+
+    {% if files.page == page_num %}
+    <li class="page-item active">
+      <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track, selected_order=selected_order.id.id) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
+    </li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}">{{ page_num }}</a>
+    </li>
+    {% endif %}
+    {% else %}
+    ...
+    {% endif %}
+    {% endfor %}
+    <li class="page-item {% if files.page == files.pages %}disabled{% endif %}">
+      <a class="page-link " href="{{ url_for('main.telemetry', page=files.next_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}">Next</a>
+    </li>
+  </ul>
+</nav>

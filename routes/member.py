@@ -1,14 +1,18 @@
-from flask import render_template, url_for, redirect, request, Blueprint, current_app, flash
-from sqlalchemy import and_
-from werkzeug.utils import secure_filename
-from database import db
+import os
+import traceback
+
+from flask import render_template, request, Blueprint, current_app, flash
 from flask_login import login_required, current_user
+from sqlalchemy import and_
+from sqlalchemy.exc import IntegrityError
+from werkzeug.utils import secure_filename
+
+from database import db
 from executor import executor
 from forms.uploads import TelemUploadForm
+from helpers.helpers import ORDERMETHOD
 from jobs.telem import process_upload
-from sqlalchemy.exc import IntegrityError
-from models.models import User, File, Car, Track
-import os, traceback
+from models.models import File, Car, Track
 
 member = Blueprint("member", __name__)
 
@@ -62,6 +66,7 @@ def telemetry():
     page = request.args.get('page', 1, type=int)
     car_id = request.args.get('car', 0, type=int)
     track_id = request.args.get('track', 0, type=int)
+    order: ORDERMETHOD = ORDERMETHOD[request.args.get('order', ORDERMETHOD.time_asc.name, type=str)]
 
     filters = [File.owner == current_user]
     if car_id > 0:
@@ -69,16 +74,19 @@ def telemetry():
     if track_id > 0:
         filters.append(File.track_id == track_id)
 
+    direction = order.direction
+    order_column = order.column
+
     files = db.session.query(File). \
         filter(and_(*filters)). \
-        order_by(File.fastest_lap_time). \
+        order_by(direction(order_column)). \
         paginate(page=page, per_page=ROWS_PER_PAGE)
 
     cars = db.session.query(Car).all()
     tracks = db.session.query(Track).all()
 
     return render_template('member/telemetry.html', files=files, cars=cars, tracks=tracks,
-                           selected_track=track_id, selected_car=car_id)
+                           selected_track=track_id, selected_car=car_id, ordermethods=ORDERMETHOD, selected_order=order)
 
 
 @member.route('/member/upload', methods=['GET', 'POST'])

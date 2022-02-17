@@ -1,11 +1,10 @@
-import os
-from sqlalchemy import and_, desc, asc
+from sqlalchemy import and_
 import pandas as pd
 from flask import Blueprint, render_template, request, flash, url_for, send_from_directory
 from werkzeug.utils import redirect
-from enum import Enum, auto
 import utils
 from database import db
+from helpers.helpers import ORDERMETHOD
 from logic.plot import create_telem_plot
 from models.models import File, Car, Track
 
@@ -18,20 +17,6 @@ ALLOWED_EXTENSIONS = {'ld', "ldx"}
 @main.route('/')
 def home():
     return render_template('index.html')
-
-
-class ORDERMETHOD(Enum):
-    time_asc = ("time_asc", "Fastest Lap", getattr(File, "fastest_lap_time"), asc)
-    time_desc = ("time_desc", "Slowest Lap", getattr(File, "fastest_lap_time"), desc)
-    views_desc = ("views_desc", "Views", getattr(File, "views"), desc)
-    uploaded_asc = ("uploaded_asc", "Oldest", getattr(File, "timestamp"), asc)
-    uploaded_desc = ("uploaded_desc", "Newest", getattr(File, "timestamp"), desc)
-
-    def __init__(self, id, desc, column, direction):
-        self.id = id
-        self.desc = desc
-        self.column = column
-        self.direction = direction
 
 
 @main.route('/telemetry')

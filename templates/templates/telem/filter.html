@@ -1,0 +1,26 @@
+<form method="get" class="form-inline">
+
+    <select id="carSelect" name="car" class="form-control mb-2 mr-sm-2">
+        <option value="0" {% if selected_car == 0 %}selected{% endif %}>All cars</option>
+        {% for car in cars %}
+        <option value="{{ car.id }}" {% if selected_car == car.id %}selected{% endif %}>{{ car.get_pretty_name() }}</option>
+        {% endfor %}
+    </select>
+
+    <select id="trackSelect" name="track" class="form-control mb-2 mr-sm-2">
+        <option value="0" {% if selected_track == 0 %}selected{% endif %}>All tracks</option>
+        {% for track in tracks %}
+        <option value="{{ track.id }}" {% if selected_track == track.id %}selected{% endif %}>{{ track.get_pretty_name() }}</option>
+        {% endfor %}
+    </select>
+
+    <select id="orderSelect" name="order" class="form-control mb-2 mr-sm-2">
+
+        {% for method in ordermethods %}
+        <option value="{{ method.id }}" {% if method.id == selected_order.id %}selected{% endif %}>{{ method.desc }}</option>
+        {% endfor %}
+
+    </select>
+
+    <button type="submit" class="btn btn-primary mb-2">Refresh</button>
+</form>
