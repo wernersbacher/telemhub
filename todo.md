@@ -1,4 +1,3 @@
-- views likes hinzufügen
 - telemetry vergleichen
 - profile settings, email, passwort vergessen
 - throttle und brakes hinzufügen
@@ -16,6 +15,7 @@ design/ui:
 hardening:
 - löschen mit extra post sichern
 - captcha
+- views vor doppelten aufrufen sichern? -> ip
 
 doofes zeug:
 - cookies? dsgvo

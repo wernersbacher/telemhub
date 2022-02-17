@@ -16,6 +16,9 @@
         <dt class="col-sm-2">FASTEST LAP</dt>
         <dd class="col-sm-9">{{ file.get_fastest_lap() }}</dd>
 
+        <dt class="col-sm-2">VIEWS</dt>
+        <dd class="col-sm-9">{{ file.views }}</dd>
+
         <dt class="col-sm-2">UPLOADER</dt>
         <dd class="col-sm-9">{{ file.owner.username }}</dd>
 
@@ -24,10 +27,17 @@
 
     </dl>
 
-    <dl class="row">
-        <a class="btn btn btn-success" href="{{ url_for('main.download_telem', id=file.id) }}" role="button">DOWNLOAD TELEMETRY</a>
+    <div class="">
+        <div class="mb-2">
+            <a class="btn btn btn-success" href="{{ url_for('main.download_telem', id=file.id) }}" role="button">DOWNLOAD TELEMETRY</a>
 
-    </dl>
+        </div>
+
+        <div class="mb-2">
+            <a class="btn btn btn-success" href="{{ url_for('main.download_telem', id=file.id) }}" role="button">DOWNLOAD TELEMETRY</a>
+
+        </div>
+    </div>
 
 </div>
 

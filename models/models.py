@@ -41,6 +41,7 @@ class File(db.Model):
 
     fastest_lap_time = db.Column(db.Float)
     likes = db.Column(db.Integer, default=0)
+    views = db.Column(db.Integer, default=0)
 
     def get_upload_date(self):
         return self.timestamp.isoformat()

@@ -3,6 +3,8 @@ from sqlalchemy import and_
 import pandas as pd
 from flask import Blueprint, render_template, request, flash, url_for, send_from_directory
 from werkzeug.utils import redirect
+
+import utils
 from database import db
 from logic.plot import create_telem_plot
 from models.models import File, Car, Track
@@ -50,6 +52,12 @@ def telemetry_show(id):
     if file is None:
         flash("Sorry, this telemetry doesn't exist (anymore)!", category="danger")
         return redirect(url_for('main.home'))
+
+    db.session.commit()
+    # update views with locking to avoid racing conditions
+    file_up = File.query.with_for_update(of=File, nowait=True).filter(File.id == id).first()
+    file_up.views = utils.increment_without_error(file_up.views)
+    db.session.commit()
 
     # load fastest lap from disk
     parquet_path = os.path.join(file.owner.get_telemetry_path(), file.filename + ".parquet")
