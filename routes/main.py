@@ -1,9 +1,9 @@
 import os
-from sqlalchemy import and_
+from sqlalchemy import and_, desc, asc
 import pandas as pd
 from flask import Blueprint, render_template, request, flash, url_for, send_from_directory
 from werkzeug.utils import redirect
-
+from enum import Enum, auto
 import utils
 from database import db
 from logic.plot import create_telem_plot
@@ -20,12 +20,26 @@ def home():
     return render_template('index.html')
 
 
+class ORDERMETHOD(Enum):
+    time_asc = ("time_asc", "Fastest Lap", getattr(File, "fastest_lap_time"), asc)
+    time_desc = ("time_desc", "Slowest Lap", getattr(File, "fastest_lap_time"), desc)
+    views_desc = ("views_desc", "Views", getattr(File, "views"), desc)
+    uploaded_asc = ("uploaded_asc", "Oldest", getattr(File, "timestamp"), asc)
+    uploaded_desc = ("uploaded_desc", "Newest", getattr(File, "timestamp"), desc)
+
+    def __init__(self, id, desc, column, direction):
+        self.id = id
+        self.desc = desc
+        self.column = column
+        self.direction = direction
+
+
 @main.route('/telemetry')
 def telemetry():
     page = request.args.get('page', 1, type=int)
     car_id = request.args.get('car', 0, type=int)
     track_id = request.args.get('track', 0, type=int)
-    print(car_id, track_id)
+    order: ORDERMETHOD = ORDERMETHOD[request.args.get('order', ORDERMETHOD.time_asc.name, type=str)]
 
     filter = []
     if car_id > 0:
@@ -33,16 +47,19 @@ def telemetry():
     if track_id > 0:
         filter.append(File.track_id == track_id)
 
+    direction = order.direction
+    order_column = order.column
+
     files = db.session.query(File). \
         filter(and_(*filter)).\
-        order_by(File.fastest_lap_time).\
+        order_by(direction(order_column)).\
         paginate(page=page, per_page=ROWS_PER_PAGE)
 
     cars = db.session.query(Car).all()
     tracks = db.session.query(Track).all()
 
-    return render_template('telemetry.html', files=files, cars=cars, tracks=tracks,
-                           selected_track=track_id, selected_car=car_id)
+    return render_template('main/telemetry.html', files=files, cars=cars, tracks=tracks,
+                           selected_track=track_id, selected_car=car_id, ordermethods=ORDERMETHOD, selected_order=order)
 
 
 @main.route("/telemetry/show/<id>")
@@ -67,7 +84,7 @@ def telemetry_show(id):
     print(df)
     vplot = create_telem_plot(df)
 
-    return render_template("telemetry_show.html", file=file, vplot=vplot)
+    return render_template("main/telemetry_show.html", file=file, vplot=vplot)
 
 
 @main.route("/telemetry/download/<id>")
