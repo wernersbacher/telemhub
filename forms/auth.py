@@ -66,3 +66,26 @@ class LoginForm(Form):
             self.password.errors.append('Invalid password')
             return False
         return True
+
+
+class PasswordForm(Form):
+    email = EmailField('Email address', [validators.DataRequired(), validators.Email()])
+    submit = SubmitField('Update email')
+
+    def __init__(self, *args, **kwargs):
+        super(PasswordForm, self).__init__(*args, **kwargs)
+
+    def validate(self, extra_validators=None):
+        print("current data:")
+        print(self.email.data)
+        initial_validation = super(PasswordForm, self).validate()
+        if not initial_validation:
+            print("inital validation failed")
+            return False
+
+        user = User.query.filter_by(email=self.email.data).first()
+        if user:
+            print("failed")
+            self.email.errors.append("Email already registered")
+            return False
+        return True

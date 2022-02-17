@@ -1,0 +1,81 @@
+{% extends "_dashboard.html" %}
+{% set active_page = "edit_profile" %}
+{% block title %} Editing Profile {% endblock %}
+
+{% from "_formhelpers.html" import render_field, render_checkbox %}
+
+{% block content %}
+
+<div class="container light-style flex-grow-1 container-p-y">
+
+    <h4 class="font-weight-bold py-3 mb-4">
+        Account settings
+    </h4>
+
+    <div class="card overflow-hidden">
+        <div class="row no-gutters row-bordered row-border-light">
+            <div class="col-md-3 pt-0">
+                <div class="list-group list-group-flush account-settings-links">
+                    <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
+                    <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
+                    <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-email">Change email</a>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="tab-content">
+                    <div class="tab-pane fade active show" id="account-general">
+
+                        <hr class="border-light m-0">
+
+                        <div class="card-body">
+                            <h2>Hello.</h2>
+
+                            Your current email is <b>{{ current_user.email }}</b>
+
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="account-change-password">
+                        <div class="card-body pb-2">
+
+                            <div class="form-group">
+                                <label class="form-label">Current password</label>
+                                <input type="password" name="currentPW" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">New password</label>
+                                <input type="password" class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Repeat new password</label>
+                                <input type="password" name="newPWConfirm" class="form-control">
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="account-change-email">
+                        <div class="card-body pb-2">
+
+                            <form method="post" action="/profile/edit">
+
+                                {{ render_field(form.email, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your Email")  }}
+
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                {{ render_field(form.submit, cls="btn btn-primary", errcls="isinvalid")  }}
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock %}

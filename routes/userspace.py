@@ -1,7 +1,7 @@
-from flask import render_template, url_for, redirect, request, Blueprint, current_app, flash
+from flask import render_template, url_for, redirect, request, Blueprint, flash
 from database import db
-from flask_login import login_user, logout_user
-from forms.auth import RegistrationForm, LoginForm
+from flask_login import login_user, logout_user, current_user, login_required
+from forms.auth import RegistrationForm, LoginForm, PasswordForm
 from models.models import User
 import os
 
@@ -45,3 +45,20 @@ def register():
         return redirect(url_for('userspace.login'))
 
     return render_template('register.html', form=form)
+
+
+@userspace.route('/profile/edit', methods=['GET', 'POST'])
+@login_required
+def profile_edit():
+    """ TODO: Schreiben der Adresse mit race conditions"""
+
+    form = PasswordForm(request.form)
+
+    if request.method == 'POST' and form.validate():
+        current_user.email = form.email.data
+        db.session.commit()
+        flash("Email set successfully.", category="success")
+    else:
+        form.email.data = current_user.email
+
+    return render_template('userspace/edit_profile.html', form=form)
