@@ -53,6 +53,14 @@ class File(db.Model):
         s = str(time(minute=minutes, second=seconds, microsecond=ms).strftime("%M:%S,%f"))
         return s[:-3]
 
+    def get_path_parquet(self):
+        path = os.path.join(self.owner.get_telemetry_path(), self.filename+".parquet")
+        return path
+
+    def get_path_zip(self):
+        path = os.path.join(self.owner.get_telemetry_path(), self.filename+".zip")
+        return path
+
     def __repr__(self):
         return '<File {}>'.format(self.filename)
 

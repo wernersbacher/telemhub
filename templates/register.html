@@ -19,7 +19,7 @@
         {{ render_field(form.password, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your Password")  }}
         {{ render_field(form.confirm, cls="form-control form-control-user", errcls="isinvalid", placeholder="Repeat it!")  }}
         {{ render_checkbox(form.accept_tos, label="I am accepting the TOS.") }}
-
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         {{ render_field(form.submit, cls="btn btn-primary btn-user btn-block") }}
     </dl>
 

@@ -2,6 +2,7 @@ from flask import Flask, render_template
 import os
 
 from flask_migrate import Migrate
+from flask_wtf.csrf import CSRFProtect
 
 from database import db
 
@@ -24,6 +25,8 @@ app.config['UPLOADS'] = os.path.join(CURPATH, 'data', 'files')
 app.config['DATA'] = os.path.join(CURPATH, 'data')
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
+csrf = CSRFProtect()
+csrf.init_app(app)
 
 executor.init_app(app)
 

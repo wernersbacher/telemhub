@@ -60,7 +60,7 @@ def telemetry_show(id):
     db.session.commit()
 
     # load fastest lap from disk
-    parquet_path = os.path.join(file.owner.get_telemetry_path(), file.filename + ".parquet")
+    parquet_path = file.get_path_parquet()
 
     df = pd.read_parquet(parquet_path)
 

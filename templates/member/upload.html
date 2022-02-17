@@ -20,6 +20,7 @@ Uploaded files:
     <dl>
         {{ render_field(form.files, cls="file-upload", errcls="isinvalid")  }}
         {{ render_field(form.submit, cls="btn btn-primary btn-user btn-block") }}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     </dl>
 </form>
 

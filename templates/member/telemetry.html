@@ -32,7 +32,7 @@
     <nav aria-label="...">
         <ul class="pagination">
             <li class="page-item {% if files.page == 1 %}disabled{% endif %}">
-                <a href="{{ url_for('main.telemetry', page=files.prev_num, car=selected_car, track=selected_track) }}"
+                <a href="{{ url_for('member.telemetry', page=files.prev_num, car=selected_car, track=selected_track) }}"
                    class="page-link" tabindex="-1"
                 >Previous</a>
             </li>
@@ -41,11 +41,11 @@
 
             {% if files.page == page_num %}
             <li class="page-item active">
-                <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
+                <a class="page-link" href="{{ url_for('member.telemetry', page=page_num, car=selected_car, track=selected_track) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
             </li>
             {% else %}
             <li class="page-item">
-                <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track) }}">{{ page_num }}</a>
+                <a class="page-link" href="{{ url_for('member.telemetry', page=page_num, car=selected_car, track=selected_track) }}">{{ page_num }}</a>
             </li>
             {% endif %}
             {% else %}
@@ -53,7 +53,7 @@
             {% endif %}
             {% endfor %}
             <li class="page-item {% if files.page == files.pages %}disabled{% endif %}">
-                <a class="page-link " href="{{ url_for('main.telemetry', page=files.next_num, car=selected_car, track=selected_track) }}">Next</a>
+                <a class="page-link " href="{{ url_for('member.telemetry', page=files.next_num, car=selected_car, track=selected_track) }}">Next</a>
             </li>
         </ul>
     </nav>
@@ -67,17 +67,25 @@
             <th scope="col">Best time</th>
             <th scope="col">Uploaded on</th>
             <th scope="col"></th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
         {% for file in files.items %}
-        <tr>
+        <tr id="{{ file.id }}">
 
             <td>{{ file.track.internal_name }}</td>
             <td>{{ file.car.internal_name }}</td>
             <td>{{ file.get_fastest_lap() }}</td>
             <td>{{ file.get_upload_date() }}</td>
             <td><a class="btn btn-primary btn-sm" href="{{ url_for('main.telemetry_show', id=file.id) }}" role="button">OPEN</a></td>
+            <td>
+                <button type="button" class="deleteTelem btn btn-danger btn-sm">
+                    DELETE
+                </button>
+
+            </td>
+
 
         </tr>
         {% endfor %}
@@ -87,7 +95,7 @@
     <nav aria-label="...">
         <ul class="pagination">
             <li class="page-item {% if files.page == 1 %}disabled{% endif %}">
-                <a href="{{ url_for('main.telemetry', page=files.prev_num, car=selected_car, track=selected_track) }}"
+                <a href="{{ url_for('member.telemetry', page=files.prev_num, car=selected_car, track=selected_track) }}"
                    class="page-link" tabindex="-1"
                 >Previous</a>
             </li>
@@ -96,11 +104,11 @@
 
             {% if files.page == page_num %}
             <li class="page-item active">
-                <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
+                <a class="page-link" href="{{ url_for('member.telemetry', page=page_num, car=selected_car, track=selected_track) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
             </li>
             {% else %}
             <li class="page-item">
-                <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track) }}">{{ page_num }}</a>
+                <a class="page-link" href="{{ url_for('member.telemetry', page=page_num, car=selected_car, track=selected_track) }}">{{ page_num }}</a>
             </li>
             {% endif %}
             {% else %}
@@ -108,7 +116,7 @@
             {% endif %}
             {% endfor %}
             <li class="page-item {% if files.page == files.pages %}disabled{% endif %}">
-                <a class="page-link " href="{{ url_for('main.telemetry', page=files.next_num, car=selected_car, track=selected_track) }}">Next</a>
+                <a class="page-link " href="{{ url_for('member.telemetry', page=files.next_num, car=selected_car, track=selected_track) }}">Next</a>
             </li>
         </ul>
     </nav>
@@ -116,6 +124,32 @@
     <p class="text-left mt-3">
         Showing page {{ files.page }} of {{ files.pages }}
     </p>
+
+
+    <!-- Modal for deletetion -->
+    <div class="modal fade" id="deleteTelemModal" tabindex="-1" role="dialog" aria-labelledby="deleteTelemModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Delete telemetry? Last warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete your telemetry file? It can't be restored!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">No, I want to keep it</button>
+                    <form method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" id="telemDeleteId" name="file_id" value="" />
+                        <button type="submit" name="submit" class="btn btn-danger">DELETE</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 </div>

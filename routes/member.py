@@ -6,21 +6,62 @@ from flask_login import login_required, current_user
 from executor import executor
 from forms.uploads import TelemUploadForm
 from jobs.telem import process_upload
+from sqlalchemy.exc import IntegrityError
 from models.models import User, File, Car, Track
-import os
+import os, traceback
 
 member = Blueprint("member", __name__)
 
 ROWS_PER_PAGE = 10
 
 
-@member.route('/member/telemetry')
+def delete_telemetry(delete_id, user):
+    """ deletes a telemetry files if everyhting is ok"""
+
+    db.session.begin_nested()
+
+    try:
+        # we need to find if the telemetry has the same id as requested
+        # and the owner has to be the user requesting it. if it fails we rollback and print trace
+        file: File = db.session.query(File).filter(and_(File.owner == current_user, File.id == delete_id)).first()
+        db.session.delete(file)
+        parquet_file = file.get_path_parquet()
+        zip_file = file.get_path_zip()
+
+        # delete the files.
+        os.remove(parquet_file)
+        os.remove(zip_file)
+
+        db.session.commit()
+        return True
+    except FileNotFoundError as e:
+        db.session.rollback()
+        print(traceback.format_exc())
+    except IntegrityError as e:
+        db.session.rollback()
+        print(traceback.format_exc())
+    except BaseException as e:
+        print(traceback.format_exc())
+
+    return False
+
+
+@member.route('/member/telemetry', methods=('GET', 'POST'))
 @login_required
 def telemetry():
+    if request.method == 'POST':
+        # delete file?
+
+        delete_id = request.form.get('file_id', -1, type=int)
+        success = delete_telemetry(delete_id, current_user)
+        if success:
+            flash("File was deleted successfully.", category="success")
+        else:
+            flash("Something went wrong when deleting the file. Are you trying to hack us?", category="danger")
+
     page = request.args.get('page', 1, type=int)
     car_id = request.args.get('car', 0, type=int)
     track_id = request.args.get('track', 0, type=int)
-    print(car_id, track_id)
 
     filters = [File.owner == current_user]
     if car_id > 0:
