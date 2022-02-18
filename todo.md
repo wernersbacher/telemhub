@@ -21,6 +21,11 @@ hardening:
 doofes zeug:
 - cookies? dsgvo
 - impressum
+- download rechte?
 
 struktur:
 - templates verschieben
+
+content
+- how to
+- faqs

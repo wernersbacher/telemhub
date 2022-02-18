@@ -71,8 +71,14 @@ class Car(db.Model):
     pretty_name = db.Column(db.String(50))
     files = db.relationship('File', backref='car', lazy='dynamic')
 
+    def get_files_number(self):
+        return len(list(self.files))
+
     def get_pretty_name(self):
         return self.internal_name
+
+    def __repr__(self):
+        return f'<Car {self.id}, {self.internal_name}>'
 
 
 class Track(db.Model):
@@ -84,6 +90,8 @@ class Track(db.Model):
     def get_pretty_name(self):
         return self.internal_name
 
+    def __repr__(self):
+        return f'<Track {self.id}, {self.internal_name}>'
 
 @login_manager.user_loader
 def load_user(user_id):

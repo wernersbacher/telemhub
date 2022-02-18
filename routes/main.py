@@ -1,10 +1,12 @@
 import pandas as pd
 from flask import Blueprint, render_template, request, flash, url_for, send_from_directory
+from flask_login import current_user
 from werkzeug.utils import redirect
 import utils
 from database import db
 from models.models import File, Car, Track
 from routes.helpers.telem import telemetry_filtering
+from sqlalchemy import func
 
 main = Blueprint("main", __name__)
 
@@ -14,7 +16,11 @@ ALLOWED_EXTENSIONS = {'ld', "ldx"}
 
 @main.route('/')
 def home():
-    return render_template('main/home.html')
+
+    cars = db.session.query(Car).all()
+    top_cars = sorted(cars, key=lambda car: car.get_files_number(), reverse=True)[-10:]
+
+    return render_template('main/home.html', top_cars=top_cars)
 
 
 @main.route('/telemetry')
