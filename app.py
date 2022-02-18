@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 
 from database import db
+from routes.ajax import ajax
 
 from routes.main import main
 from routes.member import member
@@ -35,6 +36,7 @@ login_manager.init_app(app)
 app.register_blueprint(main)
 app.register_blueprint(member)
 app.register_blueprint(userspace)
+app.register_blueprint(ajax)
 
 
 @app.errorhandler(401)

@@ -2,15 +2,10 @@
 - telemetry vergleichen, bzw eh über ajax laden
 - throttle und brakes hinzufügen
 
-- profile settings, email, passwort vergessen
+- passwort vergessen
 
-- filterung auch für andere telemetry seite; vielleicht vereinen?
-- nur die schnellsten werte anzeigen (no duplicate, sort by lowest time)
-
-- telemetry löschen
 
 profil:
-- liste an telemetry, wie my telemetry
 - anzahl von hochladen, ingesamten views
 
 design/ui:

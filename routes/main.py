@@ -1,10 +1,8 @@
-from sqlalchemy import and_
 import pandas as pd
 from flask import Blueprint, render_template, request, flash, url_for, send_from_directory
 from werkzeug.utils import redirect
 import utils
 from database import db
-from logic.plot import create_telem_plot
 from models.models import File, Car, Track
 from routes.helpers.telem import telemetry_filtering
 
@@ -47,10 +45,8 @@ def telemetry_show(id):
 
     df = pd.read_parquet(parquet_path)
 
-    print(df)
-    vplot = create_telem_plot(df)
 
-    return render_template("main/telemetry_show.html", file=file, vplot=vplot)
+    return render_template("main/telemetry_show.html", file=file)
 
 
 @main.route("/telemetry/download/<id>")

@@ -33,24 +33,13 @@
 
         </div>
 
-        <div class="mb-2">
-            <a class="btn btn btn-success" href="{{ url_for('main.download_telem', id=file.id) }}" role="button">DOWNLOAD TELEMETRY</a>
-
-        </div>
     </div>
 
 </div>
 
 <div class="mb-4 w-100 p-3">
-    <div id="vplot" class="vplot"></div>
+    <div id="vplot" data-fileid="{{ file.id }}" class="vplot"></div>
 </div>
-
-<script type="text/javascript">
-  var vplot = {{ vplot | safe }};
-  Plotly.plot('vplot', vplot, {});
-
-</script>
-
 
 {% endblock %}
 

@@ -1,13 +1,16 @@
 (function($) {
   "use strict"; // Start of use strict
 
+
+
+
+
+    // fill deletion modal with id
     $(".deleteTelem").on("click", function() {
       $('#deleteTelemModal').modal('show');
-      $('#deleteTelemModal').find('.modal-body').append('<p>append some html here</p>');
       var id = $(this).closest("tr").attr('id');
       console.log($(this))
       $('#telemDeleteId').val(id);
-
 
     });
 
