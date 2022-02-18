@@ -1,18 +1,18 @@
 import os
 import traceback
 
-from flask import render_template, request, Blueprint, current_app, flash
+from flask import render_template, request, Blueprint, current_app, flash, url_for
 from flask_login import login_required, current_user
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError
-from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename, redirect
 
 from database import db
 from executor import executor
 from forms.uploads import TelemUploadForm
 from helpers.helpers import ORDERMETHOD
 from jobs.telem import process_upload
-from models.models import File, Car, Track
+from models.models import File, Car, Track, User
 
 member = Blueprint("member", __name__)
 
@@ -53,6 +53,8 @@ def delete_telemetry(delete_id, user):
 @member.route('/member/telemetry', methods=('GET', 'POST'))
 @login_required
 def telemetry():
+    """ shows personal uploaded telemetry"""
+
     if request.method == 'POST':
         # delete file?
 
@@ -86,6 +88,40 @@ def telemetry():
     tracks = db.session.query(Track).all()
 
     return render_template('member/telemetry.html', files=files, cars=cars, tracks=tracks,
+                           selected_track=track_id, selected_car=car_id, ordermethods=ORDERMETHOD, selected_order=order)
+
+
+@member.route('/member/profile/<username>')
+def profile(username):
+    """ shows user profile """
+    user = db.session.query(User).filter_by(username=username).first()
+    if user is None:
+        flash("Sorry, this user doesn't exist (anymore)!", category="danger")
+        return redirect(url_for('main.home'))
+
+    page = request.args.get('page', 1, type=int)
+    car_id = request.args.get('car', 0, type=int)
+    track_id = request.args.get('track', 0, type=int)
+    order: ORDERMETHOD = ORDERMETHOD[request.args.get('order', ORDERMETHOD.time_asc.name, type=str)]
+
+    filters = [File.owner == user]
+    if car_id > 0:
+        filters.append(File.car_id == car_id)
+    if track_id > 0:
+        filters.append(File.track_id == track_id)
+
+    direction = order.direction
+    order_column = order.column
+
+    files = db.session.query(File). \
+        filter(and_(*filters)). \
+        order_by(direction(order_column)). \
+        paginate(page=page, per_page=ROWS_PER_PAGE)
+
+    cars = db.session.query(Car).all()
+    tracks = db.session.query(Track).all()
+
+    return render_template("member/profile.html", user=user, files=files, cars=cars, tracks=tracks,
                            selected_track=track_id, selected_car=car_id, ordermethods=ORDERMETHOD, selected_order=order)
 
 

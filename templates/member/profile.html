@@ -1,0 +1,97 @@
+{% extends "_dashboard.html" %}
+{% set active_page = "user_profile" %}
+{% block title %} User: {{ user.username }} {% endblock %}
+
+{% block content %}
+
+<h2>Uploaded by {{ user.username }}</h2>
+
+
+<hr/>
+
+{% if files %}
+<div class="mb-4 w-100 p-3">
+
+
+    {% include 'templates/telem/filter.html' %}
+
+
+
+    {% include 'templates/telem/pagination.html' %}
+
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Track</th>
+            <th scope="col">Car</th>
+            <th scope="col">Fastest Lap</th>
+            <th scope="col">Views</th>
+            <th scope="col">Uploaded on</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for file in files.items %}
+        <tr id="{{ file.id }}">
+
+            <td>{{ file.track.internal_name }}</td>
+            <td>{{ file.car.internal_name }}</td>
+            <td>{{ file.get_fastest_lap() }}</td>
+            <td>{{ file.views }}</td>
+            <td>{{ file.get_upload_date() }}</td>
+            <td><a class="btn btn-primary btn-sm" href="{{ url_for('main.telemetry_show', id=file.id) }}" role="button">OPEN</a></td>
+            <td>
+                <button type="button" class="deleteTelem btn btn-danger btn-sm">
+                    DELETE
+                </button>
+
+            </td>
+
+
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% include 'templates/telem/pagination.html' %}
+
+    <p class="text-left mt-3">
+        Showing page {{ files.page }} of {{ files.pages }}
+    </p>
+
+
+    <!-- Modal for deletetion -->
+    <div class="modal fade" id="deleteTelemModal" tabindex="-1" role="dialog" aria-labelledby="deleteTelemModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Delete telemetry? Last warning</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete your telemetry file? It can't be restored!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">No, I want to keep it</button>
+                    <form method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" id="telemDeleteId" name="file_id" value="" />
+                        <button type="submit" name="submit" class="btn btn-danger">DELETE</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+{% endif %}
+
+
+
+{% endblock %}
+

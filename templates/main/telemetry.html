@@ -33,7 +33,7 @@
             <td>{{ file.car.internal_name }}</td>
             <td>{{ file.get_fastest_lap() }}</td>
             <td>{{ file.views }}</td>
-            <td>{{ file.owner.username }}</td>
+            <td><a href="{{ url_for('member.profile', username=file.owner.username) }}">{{ file.owner.username }}</a></td>
             <td>{{ file.get_upload_date() }}</td>
             <td><a class="btn btn-primary btn-sm" href="{{ url_for('main.telemetry_show', id=file.id) }}" role="button">OPEN</a></td>
 

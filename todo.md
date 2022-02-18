@@ -25,6 +25,7 @@ hardening:
 
 doofes zeug:
 - cookies? dsgvo
+- impressum
 
 struktur:
 - templates verschieben

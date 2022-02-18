@@ -49,6 +49,7 @@ def telemetry():
 
 @main.route("/telemetry/show/<id>")
 def telemetry_show(id):
+    """ shows one telemetry page """
     print("Trying to load id")
     file = db.session.query(File).filter_by(id=id).first()
     if file is None:
