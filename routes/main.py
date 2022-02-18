@@ -4,7 +4,6 @@ from flask import Blueprint, render_template, request, flash, url_for, send_from
 from werkzeug.utils import redirect
 import utils
 from database import db
-from helpers.helpers import ORDERMETHOD
 from logic.plot import create_telem_plot
 from models.models import File, Car, Track
 from routes.helpers.telem import telemetry_filtering
@@ -17,7 +16,7 @@ ALLOWED_EXTENSIONS = {'ld', "ldx"}
 
 @main.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('main/home.html')
 
 
 @main.route('/telemetry')

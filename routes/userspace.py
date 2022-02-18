@@ -20,7 +20,7 @@ def login():
             flash('You were successfully logged in.', category="success")
             return redirect(redirect_url)
 
-    return render_template('login.html', form=form)
+    return render_template('userspace/login.html', form=form)
 
 
 @userspace.route('/logout')
@@ -44,7 +44,7 @@ def register():
         flash('Registration completed, you can now log in!')
         return redirect(url_for('userspace.login'))
 
-    return render_template('register.html', form=form)
+    return render_template('userspace/register.html', form=form)
 
 
 @userspace.route('/profile/edit', methods=['GET', 'POST'])
