@@ -1,7 +1,7 @@
 from flask import render_template, url_for, redirect, request, Blueprint, flash
 from database import db
 from flask_login import login_user, logout_user, current_user, login_required
-from forms.auth import RegistrationForm, LoginForm, PasswordForm
+from forms.auth import RegistrationForm, LoginForm, UpdateEmailForm, UpdatePasswordForm
 from models.models import User
 import os
 
@@ -50,15 +50,23 @@ def register():
 @userspace.route('/profile/edit', methods=['GET', 'POST'])
 @login_required
 def profile_edit():
-    """ TODO: Schreiben der Adresse mit race conditions"""
+    """ TODO: Schreiben der Adresse mit race conditions
+            both validators are getting triggered even when on same page?
+    """
 
-    form = PasswordForm(request.form)
+    emailForm = UpdateEmailForm(request.form)
+    passwordForm = UpdatePasswordForm(request.form)
 
-    if request.method == 'POST' and form.validate():
-        current_user.email = form.email.data
+    if emailForm.validate_on_submit():
+        current_user.email = emailForm.email.data
         db.session.commit()
         flash("Email set successfully.", category="success")
-    else:
-        form.email.data = current_user.email
 
-    return render_template('userspace/edit_profile.html', form=form)
+    elif passwordForm.validate_on_submit():
+        current_user.set_pass(passwordForm.new_password.data)
+        db.session.commit()
+        flash("New Password set successfully.", category="success")
+    else:
+        emailForm.email.data = current_user.email
+
+    return render_template('userspace/edit_profile.html',passwordForm=passwordForm, emailForm=emailForm)

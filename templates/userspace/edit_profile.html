@@ -39,20 +39,15 @@
                     <div class="tab-pane fade" id="account-change-password">
                         <div class="card-body pb-2">
 
-                            <div class="form-group">
-                                <label class="form-label">Current password</label>
-                                <input type="password" name="currentPW" class="form-control">
-                            </div>
+                            <form method="post">
 
-                            <div class="form-group">
-                                <label class="form-label">New password</label>
-                                <input type="password" class="form-control">
-                            </div>
+                                {{ render_field(passwordForm.old_password, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your Current Password")  }}
+                                {{ render_field(passwordForm.new_password, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your New Password")  }}
+                                {{ render_field(passwordForm.confirm_password, cls="form-control form-control-user", errcls="isinvalid", placeholder="Repeat New Password")  }}
 
-                            <div class="form-group">
-                                <label class="form-label">Repeat new password</label>
-                                <input type="password" name="newPWConfirm" class="form-control">
-                            </div>
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                {{ render_field(passwordForm.submit, cls="btn btn-primary", errcls="isinvalid")  }}
+                            </form>
 
                         </div>
                     </div>
@@ -60,12 +55,12 @@
                     <div class="tab-pane fade" id="account-change-email">
                         <div class="card-body pb-2">
 
-                            <form method="post" action="/profile/edit">
+                            <form method="post">
 
-                                {{ render_field(form.email, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your Email")  }}
+                                {{ render_field(emailForm.email, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your Email")  }}
 
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                                {{ render_field(form.submit, cls="btn btn-primary", errcls="isinvalid")  }}
+                                {{ render_field(emailForm.submit, cls="btn btn-primary", errcls="isinvalid")  }}
                             </form>
 
                         </div>
