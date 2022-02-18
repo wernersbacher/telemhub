@@ -6,15 +6,15 @@ from sqlalchemy import and_
 ROWS_PER_PAGE = 10
 
 
-def telemetry_filtering(request, user=None):
+def telemetry_filtering(request, filter_by_user=None):
     page = request.args.get('page', 1, type=int)
     car_id = request.args.get('car', 0, type=int)
     track_id = request.args.get('track', 0, type=int)
     order: ORDERMETHOD = ORDERMETHOD[request.args.get('order', ORDERMETHOD.time_asc.name, type=str)]
 
     filters = []
-    if user is not None:
-        filters.append(File.owner == user)
+    if filter_by_user is not None:
+        filters.append(File.owner == filter_by_user)
     if car_id > 0:
         filters.append(File.car_id == car_id)
     if track_id > 0:

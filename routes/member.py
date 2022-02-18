@@ -10,9 +10,9 @@ from werkzeug.utils import secure_filename, redirect
 from database import db
 from executor import executor
 from forms.uploads import TelemUploadForm
-from helpers.helpers import ORDERMETHOD
 from jobs.telem import process_upload
 from models.models import File, Car, Track, User
+from routes.helpers.telem import telemetry_filtering
 
 member = Blueprint("member", __name__)
 
@@ -65,30 +65,9 @@ def telemetry():
         else:
             flash("Something went wrong when deleting the file. Are you trying to hack us?", category="danger")
 
-    page = request.args.get('page', 1, type=int)
-    car_id = request.args.get('car', 0, type=int)
-    track_id = request.args.get('track', 0, type=int)
-    order: ORDERMETHOD = ORDERMETHOD[request.args.get('order', ORDERMETHOD.time_asc.name, type=str)]
+    telem_kwargs = telemetry_filtering(request, filter_by_user=current_user)
 
-    filters = [File.owner == current_user]
-    if car_id > 0:
-        filters.append(File.car_id == car_id)
-    if track_id > 0:
-        filters.append(File.track_id == track_id)
-
-    direction = order.direction
-    order_column = order.column
-
-    files = db.session.query(File). \
-        filter(and_(*filters)). \
-        order_by(direction(order_column)). \
-        paginate(page=page, per_page=ROWS_PER_PAGE)
-
-    cars = db.session.query(Car).all()
-    tracks = db.session.query(Track).all()
-
-    return render_template('member/telemetry.html', files=files, cars=cars, tracks=tracks,
-                           selected_track=track_id, selected_car=car_id, ordermethods=ORDERMETHOD, selected_order=order)
+    return render_template('member/telemetry.html', **telem_kwargs)
 
 
 @member.route('/member/profile/<username>')
@@ -99,30 +78,9 @@ def profile(username):
         flash("Sorry, this user doesn't exist (anymore)!", category="danger")
         return redirect(url_for('main.home'))
 
-    page = request.args.get('page', 1, type=int)
-    car_id = request.args.get('car', 0, type=int)
-    track_id = request.args.get('track', 0, type=int)
-    order: ORDERMETHOD = ORDERMETHOD[request.args.get('order', ORDERMETHOD.time_asc.name, type=str)]
+    telem_kwargs = telemetry_filtering(request, filter_by_user=user)
 
-    filters = [File.owner == user]
-    if car_id > 0:
-        filters.append(File.car_id == car_id)
-    if track_id > 0:
-        filters.append(File.track_id == track_id)
-
-    direction = order.direction
-    order_column = order.column
-
-    files = db.session.query(File). \
-        filter(and_(*filters)). \
-        order_by(direction(order_column)). \
-        paginate(page=page, per_page=ROWS_PER_PAGE)
-
-    cars = db.session.query(Car).all()
-    tracks = db.session.query(Track).all()
-
-    return render_template("member/profile.html", user=user, files=files, cars=cars, tracks=tracks,
-                           selected_track=track_id, selected_car=car_id, ordermethods=ORDERMETHOD, selected_order=order)
+    return render_template("member/profile.html", user=user, **telem_kwargs)
 
 
 @member.route('/member/upload', methods=['GET', 'POST'])

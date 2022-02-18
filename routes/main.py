@@ -7,6 +7,7 @@ from database import db
 from helpers.helpers import ORDERMETHOD
 from logic.plot import create_telem_plot
 from models.models import File, Car, Track
+from routes.helpers.telem import telemetry_filtering
 
 main = Blueprint("main", __name__)
 
@@ -21,30 +22,10 @@ def home():
 
 @main.route('/telemetry')
 def telemetry():
-    page = request.args.get('page', 1, type=int)
-    car_id = request.args.get('car', 0, type=int)
-    track_id = request.args.get('track', 0, type=int)
-    order: ORDERMETHOD = ORDERMETHOD[request.args.get('order', ORDERMETHOD.time_asc.name, type=str)]
 
-    filter = []
-    if car_id > 0:
-        filter.append(File.car_id == car_id)
-    if track_id > 0:
-        filter.append(File.track_id == track_id)
+    telem_kwargs = telemetry_filtering(request)
 
-    direction = order.direction
-    order_column = order.column
-
-    files = db.session.query(File). \
-        filter(and_(*filter)).\
-        order_by(direction(order_column)).\
-        paginate(page=page, per_page=ROWS_PER_PAGE)
-
-    cars = db.session.query(Car).all()
-    tracks = db.session.query(Track).all()
-
-    return render_template('main/telemetry.html', files=files, cars=cars, tracks=tracks,
-                           selected_track=track_id, selected_car=car_id, ordermethods=ORDERMETHOD, selected_order=order)
+    return render_template('main/telemetry.html', **telem_kwargs)
 
 
 @main.route("/telemetry/show/<id>")
