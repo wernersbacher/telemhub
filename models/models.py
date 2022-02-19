@@ -87,6 +87,9 @@ class Track(db.Model):
     pretty_name = db.Column(db.String(50))
     files = db.relationship('File', backref='track', lazy='dynamic')
 
+    def get_files_number(self):
+        return len(list(self.files))
+
     def get_pretty_name(self):
         return self.internal_name
 

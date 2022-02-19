@@ -16,16 +16,23 @@ ALLOWED_EXTENSIONS = {'ld', "ldx"}
 
 @main.route('/')
 def home():
+    tracks = db.session.query(Car).all()
+    top_cars = sorted(tracks, key=lambda car: car.get_files_number(), reverse=True)[-10:]
 
-    cars = db.session.query(Car).all()
-    top_cars = sorted(cars, key=lambda car: car.get_files_number(), reverse=True)[-10:]
+    tracks = db.session.query(Track).all()
+    top_tracks = sorted(tracks, key=lambda track: track.get_files_number(), reverse=True)[-10:]
 
-    return render_template('main/home.html', top_cars=top_cars)
+    number_of_files = db.session.query(File).count()
+    print(f"number_of_files: {number_of_files}")
+
+    number_of_views = db.session.query(func.sum(File.views)).first()[0]
+
+    return render_template('main/home.html', top_cars=top_cars, top_tracks=top_tracks, number_of_files=number_of_files,
+                           number_of_views=number_of_views)
 
 
 @main.route('/telemetry')
 def telemetry():
-
     telem_kwargs = telemetry_filtering(request)
 
     return render_template('main/telemetry.html', **telem_kwargs)
@@ -51,7 +58,6 @@ def telemetry_show(id):
 
     df = pd.read_parquet(parquet_path)
 
-
     return render_template("main/telemetry_show.html", file=file)
 
 
@@ -72,5 +78,3 @@ def download_telem(id):
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-

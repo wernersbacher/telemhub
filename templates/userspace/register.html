@@ -18,7 +18,15 @@
         {{ render_field(form.email, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your Email")  }}
         {{ render_field(form.password, cls="form-control form-control-user", errcls="isinvalid", placeholder="Your Password")  }}
         {{ render_field(form.confirm, cls="form-control form-control-user", errcls="isinvalid", placeholder="Repeat it!")  }}
-        {{ render_checkbox(form.accept_tos, label="I am accepting the TOS.") }}
+        {{ render_checkbox(form.accept_tos, label="I am accepting the Terms of Service and the Privacy Policy. ") }}
+        <div class="form-group">
+        <div class="custom-control">
+
+            <a href="{{ url_for('info.tos')}}">Terms Of Service</a> | <a href="{{ url_for('info.privacy')}}">Privacy Policy</a>
+        </div>
+        </div>
+
+
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         {{ render_field(form.submit, cls="btn btn-primary btn-user") }}
     </dl>

@@ -6,6 +6,7 @@ from flask_wtf.csrf import CSRFProtect
 
 from database import db
 from routes.ajax import ajax
+from routes.info import info
 
 from routes.main import main
 from routes.member import member
@@ -37,6 +38,7 @@ app.register_blueprint(main)
 app.register_blueprint(member)
 app.register_blueprint(userspace)
 app.register_blueprint(ajax)
+app.register_blueprint(info)
 
 
 @app.errorhandler(401)
