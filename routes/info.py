@@ -14,3 +14,9 @@ def privacy():
 
     return render_template("info/privacy.html")
 
+
+@info.route('/info/cookies')
+def cookies():
+
+    return render_template("info/consent.html")
+

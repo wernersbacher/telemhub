@@ -18,13 +18,25 @@
 
     <script src="js/plotly-latest.min.js"></script>
 
+
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.css" rel="stylesheet">
+    <link href="css/cookies.css" rel="stylesheet">
 
 
 </head>
 
 <body id="page-top">
+
+<!-- Cookie Banner -->
+<div id="cb-cookie-banner" class="alert alert-dark text-center mb-0" role="alert">
+    🍪 This website uses cookies to ensure you get the best experience on our website.
+    <a href="{{ url_for('info.cookies') }}">Learn more</a>
+    <button type="button" class="btn btn-primary ms-3" onclick="window.cb_hideCookieBanner()">
+        I Consent!
+    </button>
+</div>
+<!-- End of Cookie Banner -->
 
 <!-- Page Wrapper -->
 <div id="wrapper">
@@ -248,6 +260,7 @@
                     <span>Copyright &copy; Telemhub 2022. This page is not affliated with something else. </span>
                     | <span><a href="{{ url_for('info.tos')}}">Terms Of Service</a></span>
                     | <span><a href="{{ url_for('info.privacy')}}">Privacy Policy</a></span>
+                    | <span><a href="{{ url_for('info.cookies')}}">Cookie Policy</a></span>
                 </div>
             </div>
         </footer>
@@ -294,6 +307,7 @@
 <!-- Custom scripts for all pages-->
 <script src="js/sb-admin-2.js"></script>
 <script src="js/lazyPlotly.js"></script>
+<script src="js/cookies.js"></script>
 
 
 </body>

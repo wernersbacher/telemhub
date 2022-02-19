@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 import os
 
+from flask_consent import Consent
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 
