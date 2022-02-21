@@ -46,6 +46,8 @@ def process_upload(file_path: str, user: User, readme_path: str):
     fastest_lap = ds.get_data_frame(lap=fastest_lap_ix)
     # print(fastest_lap.keys())
 
+    print("Got fastest lap from data.")
+
     # print(fastest_lap[["speedkmh", "dist_lap", "time_lap"]])
 
     car = db.session.query(Car).filter_by(internal_name=head.event).first()
@@ -55,6 +57,7 @@ def process_upload(file_path: str, user: User, readme_path: str):
 
     # -------------------------------- CAR
     # try to write car
+    print("trying to add car.")
     db.session.begin_nested()
     try:
         db.session.add(car)
@@ -67,7 +70,7 @@ def process_upload(file_path: str, user: User, readme_path: str):
         print(traceback.format_exc())
 
     # -------------------------------- TRACK
-    # print("Get or updating track...")
+    print("trying to add track.")
     track = db.session.query(Track).filter_by(internal_name=head.venue).first()
     if track is None:
         track = Track(internal_name=head.venue)

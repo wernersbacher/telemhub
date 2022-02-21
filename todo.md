@@ -1,5 +1,8 @@
-- installer schreiben, www-data und dan in /var/html
-# ebs storage?
+- installer für bessere ausführung schreiben
+
+- ssl verstehen
+
+- logging für worker
 
 this field i required upload fix
 

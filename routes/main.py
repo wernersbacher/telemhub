@@ -23,7 +23,6 @@ def home():
     top_tracks = sorted(tracks, key=lambda track: track.get_files_number(), reverse=True)[-10:]
 
     number_of_files = db.session.query(File).count()
-    print(f"number_of_files: {number_of_files}")
 
     number_of_views = db.session.query(func.sum(File.views)).first()[0]
 
