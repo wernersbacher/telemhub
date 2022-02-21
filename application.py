@@ -1,7 +1,6 @@
 from flask import Flask, render_template
 import os
 
-from flask_consent import Consent
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 
@@ -18,7 +17,7 @@ from executor import executor
 
 CURPATH = os.path.abspath(os.path.dirname(__file__))
 
-app = Flask(__name__)
+app = application = Flask(__name__)
 app.secret_key = b'j3nr#+38f8fdeadbeef--w'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(CURPATH, 'app.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
