@@ -3,6 +3,6 @@ from wtforms.validators import DataRequired
 
 
 class TelemUploadForm(Form):
-    files = MultipleFileField('File(s) Upload', validators=[DataRequired()])
+    files = MultipleFileField('File(s) Upload')
 
     submit = SubmitField('Upload telemetry')

@@ -1,3 +1,8 @@
+- installer schreiben, www-data und dan in /var/html
+# ebs storage?
+
+this field i required upload fix
+
 
 - telemetry vergleichen, bzw eh über ajax laden
 - throttle und brakes hinzufügen
