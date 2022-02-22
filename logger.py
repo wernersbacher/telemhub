@@ -6,8 +6,9 @@ from logging.handlers import RotatingFileHandler
 LOG_APP_FILENAME = 'app.log'
 LOG_WORKER_FILENAME = 'worker.log'
 if platform == "linux":
-    LOG_APP_FILENAME = "/var/log/telemhub/worker.log"  # having permissions?
-    LOG_WORKER_FILENAME = "/var/log/telemhub/app.log"  # having permissions?
+    print("Detected Linux, changing log dir to /var/log")
+    LOG_WORKER_FILENAME = "/var/log/telemhub/worker.log"  # having permissions?
+    LOG_APP_FILENAME = "/var/log/telemhub/app.log"  # having permissions?
 
 # LOGLEVEL = logging.DEBUG
 LOGLEVEL = logging.INFO
