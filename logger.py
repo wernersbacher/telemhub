@@ -1,5 +1,5 @@
 import logging
-import platform
+from sys import platform
 from logging.handlers import RotatingFileHandler
 
 # to see the log file run with tail -f <logfilename>
