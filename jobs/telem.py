@@ -29,7 +29,11 @@ def _process_upload(file_path: str, user: User, readme_path: str):
     ldx_path = os.path.splitext(file_path)[0] + ".ldx"
     zip_path = os.path.splitext(file_path)[0] + ".zip"
 
+    logger.info("Created path names")
+
     head, chans = ldp.read_ldfile(file_path)
+
+    logger.info("Loaded head and channel from file")
 
     if head.event == "AC_LIVE":
         logger.error("Detected wrong ld file, aborting")
@@ -43,7 +47,7 @@ def _process_upload(file_path: str, user: User, readme_path: str):
 
     # read laps from xml files
     laps = np.array(telemetry.laps(file_path))
-
+    logger.info("Read laps")
     # create DataStore that is used later to get pandas DataFrame
     ds = telemetry.LDDataStore(chans, laps, freq=20, acc=head.event != 'AC_LIVE')
 
