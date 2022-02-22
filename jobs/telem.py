@@ -25,15 +25,10 @@ def _process_upload(file_path: str, user: User, readme_path: str):
     logger.info(f" --------- processing file {file_path} in background from user {user.username}")
     logger.info("1")
     path_only, file_name_with_ext = os.path.split(file_path)
-    logger.info("2")
     file_name, file_ext = os.path.splitext(file_name_with_ext)
-    logger.info("3")
     parquet_path = os.path.join(path_only, f"{file_name}.parquet")
-    logger.info("4")
     ldx_path = os.path.splitext(file_path)[0] + ".ldx"
-    logger.info("5")
     zip_path = os.path.splitext(file_path)[0] + ".zip"
-    logger.info("6")
 
     logger.info("Created path names")
 

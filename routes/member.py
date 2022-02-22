@@ -9,6 +9,7 @@ from werkzeug.utils import secure_filename, redirect
 
 from database import db
 from executor import executor
+
 from forms.uploads import TelemUploadForm
 from jobs.telem import process_upload
 from models.models import File, Car, Track, User
@@ -127,12 +128,19 @@ def upload():
         # only process data after upload; otherwise errors may appear?
         if task_list:
             for task in task_list:
-                executor.submit(*task)
+                #executor.submit(*task)
+                executor.submit_stored(current_user.username, *task)
 
         if uploaded_files:
             flash(f"{len(uploaded_files)} files were uploaded! It might take a few moments for them to show up.",
                   category="success")
         else:
             flash("No files were uploaded, please don't forget to upload both ld and ldx!", category="danger")
+
+    if executor.futures.done(current_user.username):
+        future = executor.futures.pop(current_user.username)
+        print("future has been done!")
+    else:
+        print("future not done")
 
     return render_template('member/upload.html', form=form)
