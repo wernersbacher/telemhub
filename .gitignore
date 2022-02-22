@@ -10,6 +10,8 @@ env/
 *.ld
 *.ldx
 
+*.log
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
