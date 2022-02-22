@@ -15,6 +15,13 @@ from logger import logger_worker as logger
 
 
 def process_upload(file_path: str, user: User, readme_path: str):
+    try:
+        _process_upload(file_path, user, readme_path)
+    except BaseException:
+        logger.error(traceback.format_exc())
+
+
+def _process_upload(file_path: str, user: User, readme_path: str):
     logger.info(f" --------- processing file {file_path} in background from user {user.username}")
     path_only, file_name_with_ext = os.path.split(file_path)
     file_name, file_ext = os.path.splitext(file_name_with_ext)
@@ -115,7 +122,6 @@ def process_upload(file_path: str, user: User, readme_path: str):
             zipF.write(readme_path, basename(readme_path), compress_type=zipfile.ZIP_DEFLATED)
         except BaseException:
             logger.error(traceback.format_exc())
-
 
     # now delete big raw files!
     os.remove(file_path)
