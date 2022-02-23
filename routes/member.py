@@ -139,8 +139,10 @@ def upload():
 
     if executor.futures.done(current_user.username):
         future = executor.futures.pop(current_user.username)
-        print("future has been done!")
+        future_done = "Last job has been done!"
+        print(future_done)
     else:
-        print("future not done")
+        future_done = "Last job has NOT been done!"
+        print(future_done)
 
     return render_template('member/upload.html', form=form)
