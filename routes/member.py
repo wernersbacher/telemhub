@@ -20,7 +20,7 @@ member = Blueprint("member", __name__)
 ROWS_PER_PAGE = 10
 
 
-def delete_telemetry(delete_id, user):
+def delete_telemetry(delete_id):
     """ deletes a telemetry files if everyhting is ok"""
 
     db.session.begin_nested()
@@ -128,21 +128,12 @@ def upload():
         # only process data after upload; otherwise errors may appear?
         if task_list:
             for task in task_list:
-                #executor.submit(*task)
-                executor.submit_stored(current_user.username, *task)
+                executor.submit(*task)
 
         if uploaded_files:
             flash(f"{len(uploaded_files)} files were uploaded! It might take a few moments for them to show up.",
                   category="success")
         else:
             flash("No files were uploaded, please don't forget to upload both ld and ldx!", category="danger")
-
-    if executor.futures.done(current_user.username):
-        future = executor.futures.pop(current_user.username)
-        future_done = "Last job has been done!"
-        print(future_done)
-    else:
-        future_done = "Last job has NOT been done!"
-        print(future_done)
 
     return render_template('member/upload.html', form=form)
