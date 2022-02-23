@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import os
 import xml.etree.ElementTree as ET
-
+from logger import logger_worker as logger
 
 class DataStore(object):
     @staticmethod
@@ -165,6 +165,8 @@ class LDDataStore(DataStore):
             _ = self[self.chan_name(x)]
 
         df = pd.DataFrame(self.columns)
+        logger.info("Available columns in data frame for get_frame_data:")
+        logger.info(df.keys())
         df['dt'] = 1 / self.freq
         df = DataStore.add_cols(df, self.laps_limits)
         df = DataStore.create_track(df)
