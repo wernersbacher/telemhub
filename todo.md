@@ -14,7 +14,8 @@ profil:
 - anzahl von hochladen, ingesamten views
 
 design/ui:
-- vorderseite wie dashboard, anzahl autos, dann liste von beliebsten autos, dann klicken mit rentsprechendem filteraufruf
+- upload verschönern, fortschritt, direkt datei check
+
 - table click verbessern
 - error log /nachrichten?
 - passwort vergessen

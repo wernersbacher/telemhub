@@ -1,5 +1,9 @@
+from sys import platform
+
 from flask import Flask, render_template
 import os
+
+from logger import logger_app as logger
 
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
@@ -24,6 +28,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['html_base_path'] = os.path.join(app.static_url_path, '')
 
 app.config['UPLOADS'] = os.path.join(CURPATH, 'data', 'files')
+if platform == "linux":  # if under linux aka production, change file directory to external drive
+    app.config['UPLOADS'] = "/var/www/files"
 app.config['DATA'] = os.path.join(CURPATH, 'data')
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
@@ -40,6 +46,9 @@ app.register_blueprint(userspace)
 app.register_blueprint(ajax)
 app.register_blueprint(info)
 
+logger.info("Starting Telemhub Flask App.")
+logger.info(f"Configured Files path: {app.config['UPLOADS']}")
+logger.info(f"Configured DB path: {app.config['SQLALCHEMY_DATABASE_URI']}")
 
 @app.errorhandler(401)
 def page_not_found(e):
