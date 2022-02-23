@@ -2,6 +2,9 @@ import numpy as np
 import pandas as pd
 import os
 import xml.etree.ElementTree as ET
+
+from pandas.errors import InvalidIndexError
+
 from logger import logger_worker as logger
 
 class DataStore(object):
@@ -170,7 +173,11 @@ class LDDataStore(DataStore):
         df['dt'] = 1 / self.freq
         df = DataStore.add_cols(df, self.laps_limits)
         df = DataStore.create_track(df)
-        df = DataStore.calc_over_understeer(df)
+        try:
+            df = DataStore.calc_over_understeer(df)
+        except InvalidIndexError as e:
+            # columns couldnt be found for understeer calculation, just skipping.
+            logger.warning("Dataframe hadn't the correct indices for calculating over and understeer!")
 
         if lap is not None:
             df = df[df.lap == lap]
