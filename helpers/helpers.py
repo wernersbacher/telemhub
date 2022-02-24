@@ -22,7 +22,7 @@ class ORDERMETHOD(Enum):
 def get_int(num):
     try:
         num = int(num)
-    except ValueError:
+    except BaseException:
         num = 0
 
     return num

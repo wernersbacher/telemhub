@@ -19,7 +19,6 @@
 
         if (cid)
             data["cid"] = cid
-        console.log(data)
 
         req = $.ajax({
             url : "/ajax/telemetry/"+id,
