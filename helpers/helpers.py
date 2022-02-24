@@ -17,3 +17,12 @@ class ORDERMETHOD(Enum):
         self.desc = desc
         self.column = column
         self.direction = direction
+
+
+def get_int(num):
+    try:
+        num = int(num)
+    except ValueError:
+        num = 0
+
+    return num

@@ -4,7 +4,9 @@ from plotly.subplots import make_subplots
 import json
 
 
-def create_telem_plot(df):
+def create_telem_plot(df, df2):
+    """ Todo: add 2nd trace with legend"""
+
     trace1 = {
         "x": df["dist_lap"],
         "y": df["speedkmh"],

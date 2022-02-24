@@ -8,7 +8,7 @@
       var id = $(this).data('fid');
       console.log(id);
       //$('#telemDeleteId').val(id);
-      Cookies.set('compareID', id, { expires: 0.1, sameSite: 'strict' })
+      Cookies.set('compareID', id, { expires: 6, sameSite: 'strict' })
 
     });
 
