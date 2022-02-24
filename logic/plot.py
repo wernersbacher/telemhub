@@ -5,9 +5,12 @@ import json
 
 
 def create_telem_plot(df, df2):
-    """ Todo: add 2nd trace with legend"""
+    """ Todo: add race times as title? and driver"""
 
-    trace1 = {
+    # subplot setup
+    fig = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.05)
+
+    trace_speed_1 = {
         "x": df["dist_lap"],
         "y": df["speedkmh"],
         "mode": "lines",
@@ -15,7 +18,7 @@ def create_telem_plot(df, df2):
         "type": 'scatter',
         "line": {"color": 'blue'}
     }
-    trace2 = {
+    trace_throttle_1 = {
         "x": df["dist_lap"],
         "y": df["throttle"],
         "mode": "lines",
@@ -23,7 +26,7 @@ def create_telem_plot(df, df2):
         "type": 'scatter',
         "line": {"color": 'green'}
     }
-    trace3 = {
+    trace_brake_1 = {
         "x": df["dist_lap"],
         "y": df["brake"],
         "mode": "lines",
@@ -32,12 +35,39 @@ def create_telem_plot(df, df2):
         "line": {"color": 'red'}
     }
 
-    # subplot setup
-    fig = make_subplots(rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.01)
+    if df2 is not None:
+        trace_speed_2 = {
+            "x": df2["dist_lap"],
+            "y": df2["speedkmh"],
+            "mode": "lines",
+            "name": 'Speed 2',
+            "type": 'scatter',
+            "line": {"color": 'grey'}
+        }
+        trace_throttle_2 = {
+            "x": df2["dist_lap"],
+            "y": df2["throttle"],
+            "mode": "lines",
+            "name": 'Throttle 2',
+            "type": 'scatter',
+            "line": {"color": 'grey'}
+        }
+        trace_brake_2 = {
+            "x": df2["dist_lap"],
+            "y": df2["brake"],
+            "mode": "lines",
+            "name": 'Brake 2',
+            "type": 'scatter',
+            "line": {"color": 'grey'}
+        }
 
-    fig.append_trace(trace1, row=1, col=1)
-    fig.append_trace(trace2, row=2, col=1)
-    fig.append_trace(trace3, row=3, col=1)
+        fig.append_trace(trace_speed_2, row=1, col=1)
+        fig.append_trace(trace_throttle_2, row=2, col=1)
+        fig.append_trace(trace_brake_2, row=3, col=1)
+
+    fig.append_trace(trace_speed_1, row=1, col=1)
+    fig.append_trace(trace_throttle_1, row=2, col=1)
+    fig.append_trace(trace_brake_1, row=3, col=1)
     fig['layout']['xaxis3']['title'] = 'Distance (meters)'
 
     figure_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
