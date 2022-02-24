@@ -29,8 +29,11 @@
 
     <div class="">
         <div class="mb-2">
-            <a class="btn btn btn-success" href="{{ url_for('main.download_telem', id=file.id) }}" role="button">DOWNLOAD TELEMETRY</a>
+            <a class="btn btn-success" href="{{ url_for('main.download_telem', id=file.id) }}" role="button">DOWNLOAD TELEMETRY</a>
 
+            <button type="button" data-fid="{{ file.id }}" class="compareTelem btn btn-info">
+                COMPARE
+            </button>
         </div>
 
     </div>

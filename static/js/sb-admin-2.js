@@ -1,11 +1,19 @@
 (function($) {
   "use strict"; // Start of use strict
 
+    $('.toast').toast();
+
+    $(".compareTelem").on("click", function() {
+      $('.toast').toast('show');
+      var id = $(this).data('fid');
+      console.log(id);
+      //$('#telemDeleteId').val(id);
+      Cookies.set('compareID', id, { expires: 0.1, sameSite: 'strict' })
+
+    });
 
 
-
-
-    // fill deletion modal with id
+    // fill deletion modal with id from table
     $(".deleteTelem").on("click", function() {
       $('#deleteTelemModal').modal('show');
       var id = $(this).closest("tr").attr('id');

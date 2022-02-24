@@ -18,7 +18,6 @@
             }
             var vplot = JSON.parse(data);
             var plot = Plotly.plot('vplot', vplot, {});
-            plot.react(config=config);
             console.log("Lazily loaded telemetry.")
         });
 

@@ -23,6 +23,7 @@
             <th scope="col">Uploader</th>
             <th scope="col">Uploaded on</th>
             <th scope="col"></th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
@@ -35,6 +36,14 @@
             <td>{{ file.views }}</td>
             <td><a href="{{ url_for('member.profile', username=file.owner.username) }}">{{ file.owner.username }}</a></td>
             <td>{{ file.get_upload_date() }}</td>
+
+            <td>
+                <button type="button" data-fid="{{ file.id }}" class="compareTelem btn btn-info btn-sm">
+                    COMPARE
+                </button>
+
+
+            </td>
             <td><a class="btn btn-primary btn-sm" href="{{ url_for('main.telemetry_show', id=file.id) }}" role="button">OPEN</a></td>
 
         </tr>
