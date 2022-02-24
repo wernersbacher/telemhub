@@ -65,10 +65,16 @@ def create_telem_plot(df, df2):
         fig.append_trace(trace_throttle_2, row=2, col=1)
         fig.append_trace(trace_brake_2, row=3, col=1)
 
+    # append normal traces
     fig.append_trace(trace_speed_1, row=1, col=1)
     fig.append_trace(trace_throttle_1, row=2, col=1)
     fig.append_trace(trace_brake_1, row=3, col=1)
+
+    # add x axis title
     fig['layout']['xaxis3']['title'] = 'Distance (meters)'
+
+    # add fix y axis
+    fig.update_yaxes(fixedrange=True)
 
     figure_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     return figure_json
