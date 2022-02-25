@@ -1,3 +1,4 @@
+move num of elems per page to settings
 
 aws:
 - installer für bessere ausführung schreiben

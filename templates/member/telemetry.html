@@ -15,16 +15,15 @@
     {% include 'templates/telem/pagination.html' %}
 
 
-    <table class="table table-hover">
+    <table class="table smalltb table-hover">
         <thead>
         <tr>
+            <th scope="col"></th>
             <th scope="col">Track</th>
             <th scope="col">Car</th>
             <th scope="col">Fastest Lap</th>
             <th scope="col">Views</th>
             <th scope="col">Uploaded on</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
             <th scope="col"></th>
         </tr>
         </thead>
@@ -32,19 +31,19 @@
         {% for file in files.items %}
         <tr id="{{ file.id }}">
 
+            <td>
+                <a class="btn btn-danger btn-sm mx-1" href="{{ url_for('main.download_telem', id=file.id) }}" role="button">DOWNLOAD</a>
+                <a class="btn btn-primary btn-sm mx-1" href="{{ url_for('main.telemetry_show', id=file.id) }}" role="button">OPEN</a>
+                <button class="compareTelem btn btn-info btn-sm mx-1" type="button" data-fid="{{ file.id }}">
+                    COMPARE
+                </button>
+
+            </td>
             <td>{{ file.track.internal_name }}</td>
             <td>{{ file.car.internal_name }}</td>
             <td>{{ file.get_fastest_lap() }}</td>
             <td>{{ file.views }}</td>
             <td>{{ file.get_upload_date() }}</td>
-            <td>
-                <button type="button" data-fid="{{ file.id }}" class="compareTelem btn btn-info btn-sm">
-                    COMPARE
-                </button>
-
-
-            </td>
-            <td><a class="btn btn-primary btn-sm" href="{{ url_for('main.telemetry_show', id=file.id) }}" role="button">OPEN</a></td>
             <td>
                 <button type="button" class="deleteTelem btn btn-danger btn-sm">
                     DELETE

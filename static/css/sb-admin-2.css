@@ -11287,3 +11287,11 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+
+.smalltb {
+    width: fit-content;
+}
+
+.smalltb>tbody>tr>td, .smalltb>tbody>tr>th, .smalltb>tfoot>tr>td, .smalltb>tfoot>tr>th, .smalltb>thead>tr>td, .smalltb>thead>tr>th {
+    padding: 9px 12px;
+}
