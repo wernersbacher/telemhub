@@ -1,3 +1,5 @@
+from enum import Enum
+
 from flask import current_app
 from datetime import datetime, time
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -7,13 +9,29 @@ from flask_login import UserMixin
 import os
 
 
+class Roles(Enum):
+    USER = 0
+    ADMIN = 10
+
+
 class User(UserMixin, db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     pass_hash = db.Column(db.String(128))
+    role = db.Column(db.Integer, default=Roles.USER.value)
 
     myFiles = db.relationship('File', backref='owner', lazy='dynamic')
+
+    def get_role(self):
+        return Roles(self.role)
+
+    def set_role(self, role: Roles):
+        self.role = role.value
+
+    def is_admin(self):
+        return self.get_role() == Roles.ADMIN
 
     def set_pass(self, password):
         self.pass_hash = generate_password_hash(password)
@@ -44,7 +62,7 @@ class File(db.Model):
     views = db.Column(db.Integer, default=0)
 
     def get_upload_date(self):
-        return self.timestamp.strftime('%Y-%m-%d')
+        return self.timestamp.isoformat()
 
     def get_fastest_lap(self):
         ms = int(1000 * (self.fastest_lap_time % 1))*1000

@@ -9,6 +9,7 @@ from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 
 from database import db
+from routes.admin import admin
 from routes.ajax import ajax
 from routes.info import info
 
@@ -47,6 +48,7 @@ app.register_blueprint(member)
 app.register_blueprint(userspace)
 app.register_blueprint(ajax)
 app.register_blueprint(info)
+app.register_blueprint(admin)
 
 logger.info("Starting Telemhub Flask App.")
 logger.info(f"Configured Files path: {app.config['UPLOADS']}")
