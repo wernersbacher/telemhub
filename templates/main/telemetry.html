@@ -31,7 +31,7 @@
 
 
             <td>
-                <a class="btn btn-danger btn-sm mx-1" href="{{ url_for('main.download_telem', id=file.id) }}" role="button">DOWNLOAD</a>
+                <a class="btn btn-danger btn-sm mx-1" href="{{ url_for('main.download_telem', id=file.id) }}" role="button"><i class="bi bi-download"></i> DOWNLOAD</a>
                 <a class="btn btn-primary btn-sm mx-1" href="{{ url_for('main.telemetry_show', id=file.id) }}" role="button">OPEN</a>
                 <button class="compareTelem btn btn-info btn-sm mx-1" type="button" data-fid="{{ file.id }}">
                     COMPARE

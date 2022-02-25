@@ -60,7 +60,7 @@ def telemetry():
         # delete file?
 
         delete_id = request.form.get('file_id', -1, type=int)
-        success = delete_telemetry(delete_id, current_user)
+        success = delete_telemetry(delete_id)
         if success:
             flash("File was deleted successfully.", category="success")
         else:

@@ -29,10 +29,10 @@
 
     <div class="">
         <div class="">
-            <a class="btn btn-danger mb-2" href="{{ url_for('main.download_telem', id=file.id) }}" role="button">DOWNLOAD TELEMETRY</a>
+            <a class="btn btn-danger mb-2" href="{{ url_for('main.download_telem', id=file.id) }}" role="button"><i class="bi bi-download"></i> DOWNLOAD TELEMETRY</a>
 
             <button type="button" data-fid="{{ file.id }}" class="compareTelem btn btn-primary mb-2">
-                COMPARE
+                <i class="bi bi-file-bar-graph"></i> COMPARE
             </button>
         </div>
 

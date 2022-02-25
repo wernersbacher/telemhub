@@ -43,7 +43,7 @@
 
     <!-- Position it -->
     <div style="position: fixed; bottom: 1em; left:0; right: 0; z-index:9999">
-        <div class="toast" style="margin:auto;" role="alert" aria-live="assertive" aria-atomic="true" data-delay="4000">
+        <div class="toast hide" style="margin:auto;" role="alert" aria-live="assertive" aria-atomic="true" data-delay="4000">
             <div class="toast-header">
                 <strong class="mr-auto">Telemetry added for comparisation</strong>
                 <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
@@ -277,6 +277,8 @@
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
                     <span>Copyright &copy; TeleHub.cf 2022. This page is not affliated with something else. </span>
+                    | <span><a href="{{ url_for('info.disclaimer')}}">Disclaimer</a></span>
+                    | <span><a href="{{ url_for('info.contact')}}">Contact</a></span>
                     | <span><a href="{{ url_for('info.tos')}}">Terms Of Service</a></span>
                     | <span><a href="{{ url_for('info.privacy')}}">Privacy Policy</a></span>
                     | <span><a href="{{ url_for('info.cookies')}}">Cookie Policy</a></span>

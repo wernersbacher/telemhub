@@ -20,3 +20,15 @@ def cookies():
 
     return render_template("info/consent.html")
 
+
+@info.route('/info/disclaimer')
+def disclaimer():
+
+    return render_template("info/disclaimer.html")
+
+
+@info.route('/info/contact')
+def contact():
+
+    return render_template("info/contact.html")
+
