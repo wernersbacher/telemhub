@@ -1,5 +1,7 @@
+- admin page decorator!!
+
 move num of elems per page to settings
-toast html non clickable??
+
 
 aws:
 - installer für bessere ausführung schreiben
