@@ -1,8 +1,12 @@
 import logging
 from enum import Enum
 import yaml
+import time
 
 config = {}
+lastCheck = 0
+
+RELOAD_TIME = 60*60  # in seconds, update every hour
 
 
 # keys zur settings.yaml file
@@ -15,9 +19,10 @@ class Setting(Enum):
         self.def_val = def_val
 
 
-def loadConfig():
+def loadConfig(force=False):
     global config
-    print("Loading config...")
+    if config and not force:
+        return
     try:  # try to open settings yaml
         with open("settings.yaml", 'r') as f:
             settings = yaml.safe_load(f)
@@ -35,6 +40,25 @@ def loadConfig():
             config[s.key] = settings[s.key]
         else:
             config[s.key] = s.def_val
+
+def get(setting):
+    global config
+
+    refreshConfig()
+
+    if setting.key in config:
+        return config[setting.key]
+    return 0
+
+
+def refreshConfig():
+    """ refreshes config if too old """
+    global lastCheck
+    now = time.time()
+    if lastCheck + RELOAD_TIME < now:
+        loadConfig(force=True)
+        lastCheck = now
+
 
 loadConfig()
 
