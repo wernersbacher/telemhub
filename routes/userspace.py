@@ -4,6 +4,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from forms.auth import RegistrationForm, LoginForm, UpdateEmailForm, UpdatePasswordForm
 from models.models import User
 import os
+from config import config, Setting
 
 userspace = Blueprint("userspace", __name__)
 
@@ -33,6 +34,10 @@ def logout():
 @userspace.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm(request.form)
+
+    if not config[Setting.REGISTRATION_ENABLED]:
+        flash("Registration is currently disabled.", category="danger")
+        return render_template('userspace/register.html', form=form)
 
     if request.method == 'POST' and form.validate():
         user = User(username=form.username.data, email=form.email.data)

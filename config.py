@@ -17,6 +17,7 @@ class Setting(Enum):
 
 def loadConfig():
     global config
+    print("Loading config...")
     try:  # try to open settings yaml
         with open("settings.yaml", 'r') as f:
             settings = yaml.safe_load(f)
