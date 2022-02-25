@@ -16,9 +16,21 @@ Uploaded files:
 </ul>
 {% endif %}
 
-<form class='user' method='post' enctype="multipart/form-data">
+<div class="mb-4 w-100 p-3">
+
+    <h1>
+        Upload some ACC telemetry.
+    </h1>
+    The telemetry will processed after the upload and can be downloaded by others.<br/>
+    Only <b>*.ld</b> and <b>*.ldx</b> files are allowed, both are needed for the process to be working.<br/>
+    The upload can take some time, the files are usually very big.<br/>
+    <br/>
+    Thank you for helping others!
+</div>
+
+<form class='user' style="width: fit-content;" method='post' enctype="multipart/form-data">
     <dl>
-        {{ render_field(form.files, cls="file-upload", errcls="isinvalid")  }}
+        {{ render_field(form.files, cls="file-upload", accept=".ld, .ldx",  errcls="isinvalid")  }}
         {{ render_field(form.submit, cls="btn btn-primary btn-user btn-block") }}
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     </dl>

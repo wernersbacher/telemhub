@@ -74,4 +74,4 @@ def profile_edit():
     else:
         emailForm.email.data = current_user.email
 
-    return render_template('userspace/edit_profile.html',passwordForm=passwordForm, emailForm=emailForm)
+    return render_template('userspace/edit_profile.html', passwordForm=passwordForm, emailForm=emailForm)

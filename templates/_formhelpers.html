@@ -56,7 +56,7 @@
 {% macro render_multi_upload(field,cls,errcls) %}
 
 {% if field.errors %}
-<div class="file-upload-wrapper">
+<div class="file-upload-wrapper mb-4">
     {{ field(class = cls,**kwargs) | safe}}
 </div>
 <div class="form-group">
@@ -69,7 +69,7 @@
 
 {% else %}
 
-<div class="file-upload-wrapper">
+<div class="file-upload-wrapper mb-4">
     {{ field(class = cls,**kwargs) | safe}}
 </div>
 
