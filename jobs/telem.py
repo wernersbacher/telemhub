@@ -54,6 +54,10 @@ def _process_upload(file_path: str, user: User, readme_path: str):
 
     # print(ds.laps_times)
     fastest_lap_time = min(ds.laps_times)
+
+    if fastest_lap_time < 20:
+        logger.error("Fastest lap time is way too short, maybe the file way just empty! Aborting.")
+
     # print(f"fastest lap was {fastest_lap_time}")
     fastest_lap_ix = ds.laps_times.index(fastest_lap_time)
     # print(fastest_lap_ix)

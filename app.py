@@ -19,7 +19,11 @@ from routes.userspace import userspace
 from loginmanager import login_manager
 from executor import executor
 
+from config import config
+
 CURPATH = os.path.abspath(os.path.dirname(__file__))
+
+
 
 app = application = Flask(__name__)
 app.secret_key = b'j3nr#+38f8fdeadbeef--w'
