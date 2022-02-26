@@ -206,6 +206,20 @@
                             </a>
                         </div>
                     </li>
+
+                    {% if current_user.is_authenticated %}
+
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link" href="{{ url_for('admin.index')}}" target="_blank" role="button"
+                           aria-haspopup="false" aria-expanded="false">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                            <!--<img class="img-profile rounded-circle"
+                                 src="img/undraw_profile.svg">-->
+                        </a>
+                    </li>
+
+                    {% endif %}
+
                     {% else %}
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link" href="{{ url_for('userspace.login')}}" id="userLogin" role="button"
