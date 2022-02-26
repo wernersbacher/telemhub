@@ -9,8 +9,9 @@ from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 
 from database import db
-from routes.admin import admin
+from models.models import User, Track, Car, File
 from routes.ajax import ajax
+from routes.helpers.admin import TelehubModelView, DashboardView
 from routes.info import info
 
 from routes.main import main
@@ -19,6 +20,10 @@ from routes.userspace import userspace
 
 from loginmanager import login_manager
 from executor import executor
+
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+
 
 CURPATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -43,12 +48,17 @@ executor.init_app(app)
 
 login_manager.init_app(app)
 
+admin = Admin(app, name='admin', template_mode='bootstrap3', index_view=DashboardView())
+admin.add_view(TelehubModelView(User, db.session))
+admin.add_view(TelehubModelView(File, db.session))
+admin.add_view(TelehubModelView(Track, db.session))
+admin.add_view(TelehubModelView(Car, db.session))
+
 app.register_blueprint(main)
 app.register_blueprint(member)
 app.register_blueprint(userspace)
 app.register_blueprint(ajax)
 app.register_blueprint(info)
-app.register_blueprint(admin)
 
 logger.info("Starting Telemhub Flask App.")
 logger.info(f"Configured Files path: {app.config['UPLOADS']}")

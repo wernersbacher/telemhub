@@ -13,3 +13,4 @@ flask-login
 flask-executor
 email_validator
 wtforms-validators
+flask-admin

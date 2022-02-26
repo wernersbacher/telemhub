@@ -25,7 +25,11 @@ class User(UserMixin, db.Model):
     myFiles = db.relationship('File', backref='owner', lazy='dynamic')
 
     def get_role(self):
-        return Roles(self.role)
+        try:
+            role = Roles(self.role)
+        except:
+            role = Roles.USER
+        return role
 
     def set_role(self, role: Roles):
         self.role = role.value
