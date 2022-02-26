@@ -6,13 +6,13 @@ from models.models import User
 
 
 class RegistrationForm(Form):
-    username = StringField('Username', [validators.Length(min=4, max=25), AlphaNumeric()])
+    username = StringField('Username', [validators.DataRequired(), validators.Length(min=4, max=25), AlphaNumeric()])
     email = EmailField('Email address', [validators.DataRequired(), validators.Email()])
     password = PasswordField('New Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
     ])
-    confirm = PasswordField('Repeat Password')
+    confirm = PasswordField('Repeat Password', [validators.DataRequired(),])
     accept_tos = BooleanField('I accept the TOS', [validators.DataRequired()])
     submit = SubmitField('Register!')
 
@@ -21,6 +21,45 @@ class RegistrationForm(Form):
 
     def validate(self, extra_validators=None):
         initial_validation = super(RegistrationForm, self).validate()
+        if not initial_validation:
+            print("inital validation failed")
+            return False
+
+        if self.password.data != self.confirm.data:
+            self.password.errors.append("Passwords do not match!")
+            print("pw fail1")
+            return False
+
+        if len(self.password.data) < 7:
+            self.password.errors.append("Password is shorter than 6 chars!")
+            print("pw fail 2")
+            return False
+
+        user = User.query.filter_by(username=self.username.data).first()
+        if user:
+            self.username.errors.append("Username already registered")
+            return False
+        user = User.query.filter_by(email=self.email.data).first()
+        if user:
+            self.email.errors.append("Email already registered")
+            return False
+        return True
+
+
+class CreateUserForm(Form):
+    username = StringField('Username', [validators.DataRequired(), validators.Length(min=4, max=25), AlphaNumeric()])
+    email = EmailField('Email address', [validators.DataRequired(), validators.Email()])
+    password = PasswordField('New Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password', [validators.DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        super(CreateUserForm, self).__init__(*args, **kwargs)
+
+    def validate(self, extra_validators=None):
+        initial_validation = super(CreateUserForm, self).validate()
         if not initial_validation:
             print("inital validation failed")
             return False

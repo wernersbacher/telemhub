@@ -207,7 +207,7 @@
                         </div>
                     </li>
 
-                    {% if current_user.is_authenticated %}
+                    {% if current_user.is_admin() %}
 
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link" href="{{ url_for('admin.index')}}" target="_blank" role="button"

@@ -1,10 +1,15 @@
-- admin page decorator!!
+admin page:
+- delete form
+- hide pass hash in list
+- roles auswahl
+- close reg -> yaml editor
 
 move num of elems per page to settings
 
 
 aws:
 - installer für bessere ausführung schreiben
+- backup sql etc
 
 profil:
 - anzahl von hochladen, ingesamten views

@@ -11,7 +11,7 @@ from flask_wtf.csrf import CSRFProtect
 from database import db
 from models.models import User, Track, Car, File
 from routes.ajax import ajax
-from routes.helpers.admin import TelehubModelView, DashboardView
+from routes.helpers.admin import TelehubModelView, DashboardView, UserView
 from routes.info import info
 
 from routes.main import main
@@ -22,7 +22,6 @@ from loginmanager import login_manager
 from executor import executor
 
 from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
 
 
 CURPATH = os.path.abspath(os.path.dirname(__file__))
@@ -49,7 +48,7 @@ executor.init_app(app)
 login_manager.init_app(app)
 
 admin = Admin(app, name='admin', template_mode='bootstrap3', index_view=DashboardView())
-admin.add_view(TelehubModelView(User, db.session))
+admin.add_view(UserView(db.session))
 admin.add_view(TelehubModelView(File, db.session))
 admin.add_view(TelehubModelView(Track, db.session))
 admin.add_view(TelehubModelView(Car, db.session))
