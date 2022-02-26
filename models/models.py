@@ -3,6 +3,8 @@ from enum import Enum
 from flask import current_app
 from datetime import datetime, time
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from helpers.helpers import length
 from loginmanager import login_manager
 from database import db
 from flask_login import UserMixin
@@ -97,6 +99,8 @@ class Car(db.Model):
         return len(list(self.files))
 
     def get_pretty_name(self):
+        if length(self.pretty_name) > 0:
+            return self.pretty_name
         return self.internal_name
 
     def __repr__(self):
@@ -113,6 +117,8 @@ class Track(db.Model):
         return len(list(self.files))
 
     def get_pretty_name(self):
+        if length(self.pretty_name) > 0:
+            return self.pretty_name
         return self.internal_name
 
     def __repr__(self):
