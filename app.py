@@ -9,7 +9,7 @@ from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 
 from database import db
-from models.models import User, Track, Car, File
+from models.models import User, Track, Car, File, Roles
 from routes.ajax import ajax
 from routes.helpers.admin import TelehubModelView, DashboardView, UserView, FileView
 from routes.info import info
@@ -33,6 +33,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(CURPATH, 'db
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['html_base_path'] = os.path.join(app.static_url_path, '')
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100mb upload limit
+
+app.config['ADMIN_SET_FILE'] = os.path.join(CURPATH, 'admin.txt')  # users in this file will get admin role on login
 
 app.config['UPLOADS'] = os.path.join(CURPATH, 'data', 'files')
 if platform == "linux":  # if under linux aka production, change file directory to external drive
@@ -62,6 +64,31 @@ app.register_blueprint(info)
 logger.info("Starting Telemhub Flask App.")
 logger.info(f"Configured Files path: {app.config['UPLOADS']}")
 logger.info(f"Configured DB path: {app.config['SQLALCHEMY_DATABASE_URI']}")
+
+
+# load admin users if file exists
+with app.app_context():
+    try:
+        with open(app.config.get("ADMIN_SET_FILE")) as fp:
+            for line in fp:
+                admin_username = line.strip()
+                logger.info(f"read user {admin_username}")
+
+                user = User.query.filter_by(username=admin_username).first()
+                if user is not None:
+                    user.set_role(Roles.ADMIN)
+                    logger.info(f"set user {user.username} as admin")
+
+                else:
+
+                    logger.info(f"user {admin_username} not found in db!")
+
+            db.session.commit()
+
+        os.remove(app.config.get("ADMIN_SET_FILE"))
+    except OSError as e:
+        print(e)
+        pass
 
 
 @app.errorhandler(401)
