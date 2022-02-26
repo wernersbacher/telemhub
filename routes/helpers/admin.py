@@ -1,4 +1,4 @@
-from flask import request, url_for
+from flask import request, url_for, flash
 from flask_admin import AdminIndexView
 from flask_admin.contrib import sqla
 from flask_login import current_user
@@ -6,7 +6,8 @@ from werkzeug.utils import redirect
 from wtforms import PasswordField
 
 from forms.auth import CreateUserForm
-from models.models import User
+from models.models import User, File
+from routes.helpers.files import delete_telemetry_file
 
 
 class TelehubModelView(sqla.ModelView):
@@ -31,6 +32,35 @@ class DashboardView(AdminIndexView):
     def inaccessible_callback(self, name, **kwargs):
         # redirect to login page if user doesn't have access
         return redirect(url_for('main.home'))
+
+
+class FileView(TelehubModelView):
+
+    def __init__(self, session, **kwargs):
+        super(FileView, self).__init__(File, session, **kwargs)
+
+    def delete_model(self, model):
+        """
+            Delete model.
+            :param model:
+                Model to delete
+        """
+        try:
+            self.on_model_delete(model)
+            # custom delete logic
+            delete_telemetry_file(model)
+
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                flash("Failed to delete record.")
+
+            self.session.rollback()
+
+            return False
+        else:
+            self.after_model_delete(model)
+
+        return True
 
 
 class UserView(TelehubModelView):

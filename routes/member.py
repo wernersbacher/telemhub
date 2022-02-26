@@ -1,10 +1,7 @@
 import os
-import traceback
 
 from flask import render_template, request, Blueprint, current_app, flash, url_for
 from flask_login import login_required, current_user
-from sqlalchemy import and_
-from sqlalchemy.exc import IntegrityError
 from werkzeug.utils import secure_filename, redirect
 
 from database import db
@@ -12,43 +9,13 @@ from executor import executor
 
 from forms.uploads import TelemUploadForm
 from jobs.telem import process_upload
-from models.models import File, Car, Track, User
+from models.models import User
+from routes.helpers.files import delete_telemetry
 from routes.helpers.telem import telemetry_filtering
 
 member = Blueprint("member", __name__)
 
 ROWS_PER_PAGE = 10
-
-
-def delete_telemetry(delete_id):
-    """ deletes a telemetry files if everyhting is ok"""
-
-    db.session.begin_nested()
-
-    try:
-        # we need to find if the telemetry has the same id as requested
-        # and the owner has to be the user requesting it. if it fails we rollback and print trace
-        file: File = db.session.query(File).filter(and_(File.owner == current_user, File.id == delete_id)).first()
-        db.session.delete(file)
-        parquet_file = file.get_path_parquet()
-        zip_file = file.get_path_zip()
-
-        # delete the files.
-        os.remove(parquet_file)
-        os.remove(zip_file)
-
-        db.session.commit()
-        return True
-    except FileNotFoundError as e:
-        db.session.rollback()
-        print(traceback.format_exc())
-    except IntegrityError as e:
-        db.session.rollback()
-        print(traceback.format_exc())
-    except BaseException as e:
-        print(traceback.format_exc())
-
-    return False
 
 
 @member.route('/member/telemetry', methods=('GET', 'POST'))

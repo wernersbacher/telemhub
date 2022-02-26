@@ -1,10 +1,9 @@
 admin page:
-- delete form
-- hide pass hash in list
-- roles auswahl
+- roles auswahl übergeben oder zumindest beschreibung dazu
 - close reg -> yaml editor
+- link zur startseite
 
-move num of elems per page to settings
+move num of elems per page to settings yaml
 
 
 aws:
