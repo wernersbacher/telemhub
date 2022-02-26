@@ -5,6 +5,7 @@ admin page:
 
 move num of elems per page to settings yaml
 
+automatic migration of db https://stackoverflow.com/questions/44961622/how-to-call-flask-migrate-api-in-script
 
 aws:
 - installer für bessere ausführung schreiben

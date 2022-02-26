@@ -1,3 +1,4 @@
+from pathlib import Path
 from sys import platform
 
 from flask import Flask, render_template
@@ -23,13 +24,16 @@ from executor import executor
 
 from flask_admin import Admin
 
-
 CURPATH = os.path.abspath(os.path.dirname(__file__))
+DB_FILE_PATH = os.path.join(CURPATH, 'db', 'app.db')
 
+# create file if not exists
+myfile = Path(DB_FILE_PATH)
+myfile.touch(exist_ok=True)
 
 app = application = Flask(__name__)
 app.secret_key = b'j3nr#+38f8fdeadbeef--w'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(CURPATH, 'db', 'app.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + DB_FILE_PATH
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['html_base_path'] = os.path.join(app.static_url_path, '')
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100mb upload limit
@@ -87,7 +91,6 @@ with app.app_context():
 
         os.remove(app.config.get("ADMIN_SET_FILE"))
     except OSError as e:
-        print(e)
         pass
 
 
