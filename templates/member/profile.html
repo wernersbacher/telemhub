@@ -12,10 +12,11 @@
 {% if files %}
 <div class="mb-4 w-100 p-3">
 
+    {# needed for pagination call #}
+    {% set page_dest = 'member.profile' %}
+    {% set page_kwargs = {'username': user.username} %}
 
     {% include 'templates/telem/filter.html' %}
-
-
 
     {% include 'templates/telem/pagination.html' %}
 

@@ -7,6 +7,8 @@
 {% if files %}
 <div class="mb-4 w-100 p-3">
 
+    {% set page_dest = 'main.telemetry' %}
+    {% set page_kwargs = {} %}
 
     {% include 'templates/telem/filter.html' %}
 
@@ -38,7 +40,8 @@
                 </button>
 
             </td>
-            <td>{{ file.track.internal_name }}</td>
+            <td><a href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=file.track.id, selected_order=selected_order.id) }}">{{ file.track.get_pretty_name() }}</a></td>
+            <td><a href="{{ url_for('main.telemetry', page=page_num, car=file.car.id, track=selected_track, selected_order=selected_order.id) }}">{{ file.car.get_pretty_name() }}</a></td>
             <td>{{ file.car.internal_name }}</td>
             <td>{{ file.get_fastest_lap() }}</td>
             <td>{{ file.views }}</td>

@@ -1,3 +1,5 @@
+- contact
+
 admin page:
 - roles auswahl übergeben oder zumindest beschreibung dazu
 - close reg -> yaml editor
@@ -22,10 +24,8 @@ design/ui:
 - passwort vergessen
 
 hardening:
-- reg schließen option
-- captcha
+- captcha reg
 - views vor doppelten aufrufen sichern? -> ip
-- max file upload
 
 doofes zeug:
 - cookies? dsgvo

@@ -1,7 +1,7 @@
 <nav aria-label="...">
   <ul class="pagination">
     <li class="page-item {% if files.page == 1 %}disabled{% endif %}">
-      <a href="{{ url_for('main.telemetry', page=files.prev_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}"
+      <a href="{{ url_for(page_dest, page=files.prev_num, car=selected_car, track=selected_track, selected_order=selected_order.id, **page_kwargs) }}"
          class="page-link" tabindex="-1"
       >Previous</a>
     </li>
@@ -10,11 +10,11 @@
 
     {% if files.page == page_num %}
     <li class="page-item active">
-      <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track, selected_order=selected_order.id.id) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
+      <a class="page-link" href="{{ url_for(page_dest, page=page_num, car=selected_car, track=selected_track, selected_order=selected_order.id, **page_kwargs) }}">{{ page_num }} <span class="sr-only">(current)</span></a>
     </li>
     {% else %}
     <li class="page-item">
-      <a class="page-link" href="{{ url_for('main.telemetry', page=page_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}">{{ page_num }}</a>
+      <a class="page-link" href="{{ url_for(page_dest, page=page_num, car=selected_car, track=selected_track, selected_order=selected_order.id, **page_kwargs) }}">{{ page_num }}</a>
     </li>
     {% endif %}
     {% else %}
@@ -22,7 +22,7 @@
     {% endif %}
     {% endfor %}
     <li class="page-item {% if files.page == files.pages %}disabled{% endif %}">
-      <a class="page-link " href="{{ url_for('main.telemetry', page=files.next_num, car=selected_car, track=selected_track, selected_order=selected_order.id) }}">Next</a>
+      <a class="page-link " href="{{ url_for(page_dest, page=files.next_num, car=selected_car, track=selected_track, selected_order=selected_order.id, **page_kwargs) }}">Next</a>
     </li>
   </ul>
 </nav>
