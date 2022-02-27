@@ -1,4 +1,4 @@
-- deletion auf admin page funzt nicht, siehe error log online
+- how to handle deletion of user but not deletion of files? -> delete all files too? mark dir as deleted
 - contact
 
 admin page:

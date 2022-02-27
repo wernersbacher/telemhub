@@ -15,14 +15,17 @@ def delete_telemetry_file(file: File):
 
     db.session.begin_nested()
 
-    try:
+    try:    # if files doe not exist anymore (because user got deleted), don't try to delete them
         parquet_file = file.get_path_parquet()
         zip_file = file.get_path_zip()
+        if parquet_file:
+            os.remove(parquet_file)
+        if zip_file:
+            os.remove(zip_file)
+
         db.session.delete(file)
 
         # delete the files.
-        os.remove(parquet_file)
-        os.remove(zip_file)
 
         db.session.commit()
         return True

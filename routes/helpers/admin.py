@@ -40,7 +40,7 @@ class FileView(TelehubModelView):
     def __init__(self, session, **kwargs):
         super(FileView, self).__init__(File, session, **kwargs)
 
-    def delete_model(self, model):
+    def delete_model(self, model: File):
         """
             Delete model.
             :param model:
@@ -50,7 +50,10 @@ class FileView(TelehubModelView):
             self.on_model_delete(model)
             # custom delete logic
             logger.info("Trying to delete model", model)
-            delete_telemetry_file(model)
+            if model.owner is not None:
+                delete_telemetry_file(model)
+            else:
+                self.session.delete(model)
 
         except Exception as ex:
             if not self.handle_view_exception(ex):

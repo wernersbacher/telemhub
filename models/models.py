@@ -78,12 +78,14 @@ class File(db.Model):
         return s[:-3]
 
     def get_path_parquet(self):
-        path = os.path.join(self.owner.get_telemetry_path(), self.filename+".parquet")
-        return path
+        if self.owner is not None:
+            return os.path.join(self.owner.get_telemetry_path(), self.filename+".parquet")
+        return False
 
     def get_path_zip(self):
-        path = os.path.join(self.owner.get_telemetry_path(), self.filename+".zip")
-        return path
+        if self.owner is not None:
+            return os.path.join(self.owner.get_telemetry_path(), self.filename+".zip")
+        return False
 
     def __repr__(self):
         return '<File {}>'.format(self.filename)
