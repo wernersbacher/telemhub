@@ -8,15 +8,17 @@ from sqlalchemy.exc import IntegrityError
 from database import db
 from models.models import File
 
+from logger import logger_app as logger
+
 
 def delete_telemetry_file(file: File):
 
     db.session.begin_nested()
 
     try:
-        db.session.delete(file)
         parquet_file = file.get_path_parquet()
         zip_file = file.get_path_zip()
+        db.session.delete(file)
 
         # delete the files.
         os.remove(parquet_file)
@@ -26,12 +28,12 @@ def delete_telemetry_file(file: File):
         return True
     except FileNotFoundError as e:
         db.session.rollback()
-        print(traceback.format_exc())
+        logger.error(traceback.format_exc())
     except IntegrityError as e:
         db.session.rollback()
-        print(traceback.format_exc())
+        logger.error(traceback.format_exc())
     except BaseException as e:
-        print(traceback.format_exc())
+        logger.error(traceback.format_exc())
 
     return False
 
@@ -47,9 +49,9 @@ def delete_telemetry(delete_id):
         file: File = db.session.query(File).filter(and_(File.owner == current_user, File.id == delete_id)).first()
         # first, try to delete it, because if it works but file deletion not, we can rollback this deletion
         # (we can't rolback file deletions)
-        db.session.delete(file)
         parquet_file = file.get_path_parquet()
         zip_file = file.get_path_zip()
+        db.session.delete(file)
 
         # delete the files.
         os.remove(parquet_file)

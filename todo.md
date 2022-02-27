@@ -1,3 +1,4 @@
+- deletion auf admin page funzt nicht, siehe error log online
 - contact
 
 admin page:

@@ -8,6 +8,7 @@ from wtforms import PasswordField
 from forms.auth import CreateUserForm
 from models.models import User, File
 from routes.helpers.files import delete_telemetry_file
+from logger import logger_app as logger
 
 
 class TelehubModelView(sqla.ModelView):
@@ -48,6 +49,7 @@ class FileView(TelehubModelView):
         try:
             self.on_model_delete(model)
             # custom delete logic
+            logger.info("Trying to delete model", model)
             delete_telemetry_file(model)
 
         except Exception as ex:
