@@ -49,11 +49,13 @@ class FileView(TelehubModelView):
         try:
             self.on_model_delete(model)
             # custom delete logic
-            logger.info("Trying to delete model", model)
+            logger.info(f"Trying to delete file {model.filename}")
             if model.owner is not None:
-                delete_telemetry_file(model)
+                sucess = delete_telemetry_file(model)
+                logger.info(f"file deletion sucess? {sucess}")
             else:
                 self.session.delete(model)
+                self.session.commit()
 
         except Exception as ex:
             if not self.handle_view_exception(ex):
