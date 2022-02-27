@@ -54,6 +54,7 @@ def profile(username):
 @member.route('/member/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
+    """ TODO: Datein in uploads schieben, dann verarbeiten und dann in telefiles schieben"""
     form = TelemUploadForm()
     readme_path = os.path.join(current_app.config.get("UPLOADS"), "readme.txt")
     uploaded_files = []  # actual saved on db

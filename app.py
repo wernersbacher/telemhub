@@ -40,10 +40,13 @@ app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100mb upload limit
 
 app.config['ADMIN_SET_FILE'] = os.path.join(CURPATH, 'admin.txt')  # users in this file will get admin role on login
 
-app.config['UPLOADS'] = os.path.join(CURPATH, 'data', 'files')
+
+app.config['UPLOADS'] = os.path.join(CURPATH, 'data', 'uploads')
+app.config['TELEFILES'] = os.path.join(CURPATH, 'data', 'files')
+app.config['PARQUETFILES'] = os.path.join(CURPATH, 'data', 'parquet')
 if platform == "linux":  # if under linux aka production, change file directory to external drive
-    app.config['UPLOADS'] = "/var/www/files"
-app.config['DATA'] = os.path.join(CURPATH, 'data')
+    app.config['TELEFILES'] = "/var/www/files"
+    app.config['PARQUETFILES'] = "/var/www/parquet"
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
 csrf = CSRFProtect()

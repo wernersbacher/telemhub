@@ -1,7 +1,11 @@
+import string
 from enum import Enum
+import random
 
 from flask import current_app
 from datetime import datetime, time
+
+from flask_sqlalchemy import xrange
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from helpers.helpers import length
@@ -9,6 +13,10 @@ from loginmanager import login_manager
 from database import db
 from flask_login import UserMixin
 import os
+
+
+def random_dir():
+    return ''.join(random.choice(string.ascii_lowercase) for i in xrange(5))
 
 
 class Roles(Enum):
@@ -45,9 +53,6 @@ class User(UserMixin, db.Model):
     def check_pass(self, password):
         return check_password_hash(self.pass_hash, password)
 
-    def get_telemetry_path(self):
-        return os.path.join(current_app.config.get('UPLOADS'), str(self.username))
-
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
@@ -57,6 +62,8 @@ class File(db.Model):
     filename = db.Column(db.String(120), nullable=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    folder_name = db.Column(db.String(120), nullable=False, default=random_dir)
 
     public = db.Column(db.Boolean, default=True)
 
@@ -79,12 +86,12 @@ class File(db.Model):
 
     def get_path_parquet(self):
         if self.owner is not None:
-            return os.path.join(self.owner.get_telemetry_path(), self.filename+".parquet")
+            return os.path.join(current_app.config.get('PARQUETFILES'), self.folder_name, self.id+".parquet")
         return False
 
     def get_path_zip(self):
         if self.owner is not None:
-            return os.path.join(self.owner.get_telemetry_path(), self.filename+".zip")
+            return os.path.join(current_app.config.get('TELEFILES'), self.folder_name, self.id+".zip")
         return False
 
     def __repr__(self):
