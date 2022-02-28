@@ -43,6 +43,7 @@ app.config['PARQUETFILES'] = os.path.join(CURPATH, 'data', 'parquet')
 if platform == "linux":  # if under linux aka production, change file directory to external drive
     app.config['TELEFILES'] = "/var/www/files"
     app.config['PARQUETFILES'] = "/var/www/parquet"
+    app.config['UPLOADS'] = "/var/www/uploads"
 
 # setup email
 app.config['MAIL_SERVER'] = cred.MAIL_SERVER
