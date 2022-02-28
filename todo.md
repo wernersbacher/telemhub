@@ -1,5 +1,5 @@
-contact
-- uberspace email server config
+bug: telemetry geht nicht mehr
+reg close bug
 
 admin page:
 - roles auswahl übergeben oder zumindest beschreibung dazu
