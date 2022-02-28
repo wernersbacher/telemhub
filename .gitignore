@@ -12,6 +12,8 @@ env/
 
 *.log
 
+cred.py
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

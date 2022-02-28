@@ -1,14 +1,10 @@
 from pathlib import Path
 from sys import platform
-
 from flask import Flask, render_template
 import os
-
 from logger import logger_app as logger
-
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
-
 from database import db
 from models.models import User, Track, Car, File, Roles
 from routes.about import about
@@ -19,11 +15,11 @@ from routes.info import info
 from routes.main import main
 from routes.member import member
 from routes.userspace import userspace
-
+from mail import mail
 from loginmanager import login_manager
 from executor import executor
-
 from flask_admin import Admin
+import cred
 
 CURPATH = os.path.abspath(os.path.dirname(__file__))
 DB_FILE_PATH = os.path.join(CURPATH, 'db', 'app.db')
@@ -41,17 +37,27 @@ app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100mb upload limit
 
 app.config['ADMIN_SET_FILE'] = os.path.join(CURPATH, 'admin.txt')  # users in this file will get admin role on login
 
-
 app.config['UPLOADS'] = os.path.join(CURPATH, 'data', 'uploads')
 app.config['TELEFILES'] = os.path.join(CURPATH, 'data', 'files')
 app.config['PARQUETFILES'] = os.path.join(CURPATH, 'data', 'parquet')
 if platform == "linux":  # if under linux aka production, change file directory to external drive
     app.config['TELEFILES'] = "/var/www/files"
     app.config['PARQUETFILES'] = "/var/www/parquet"
+
+# setup email
+app.config['MAIL_SERVER'] = cred.MAIL_SERVER
+app.config['MAIL_PORT'] = cred.MAIL_PORT
+app.config['MAIL_USERNAME'] = cred.MAIL_USERNAME
+app.config['MAIL_PASSWORD'] = cred.MAIL_PASSWORD
+app.config['MAIL_USE_TLS'] = cred.MAIL_USE_TLS
+app.config['MAIL_DEFAULT_SENDER'] = cred.MAIL_DEFAULT_SENDER
+
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
 csrf = CSRFProtect()
 csrf.init_app(app)
+
+mail.init_app(app)
 
 executor.init_app(app)
 

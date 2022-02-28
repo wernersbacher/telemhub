@@ -1,14 +1,16 @@
 from flask import Blueprint, render_template, url_for, request, flash
 from flask_login import current_user
-
+from flask_mail import Message
 from forms.contact import ContactForm
+
+import cred
+from mail import mail
 
 about = Blueprint("about", __name__)
 
 
 @about.route('/about/faqs')
 def faqs():
-
     FAQ = [
         ("What does this website do?",
          """This website is a hub for sharing sim racing telemetry. Users can upload, compare and download them.
@@ -38,15 +40,25 @@ def faqs():
 
 @about.route('/about/contact', methods=['GET', 'POST'])
 def contact():
-
     form = ContactForm(request.form)
 
     if form.validate_on_submit():
-        print(form.email.data)
-        print(form.subject.data)
-        print(form.message.data)
-        print(form.name.data)
-        flash("Email set successfully.", category="success")
+
+        message = f""" 
+        New mail from your contact form!
+        From '{form.name.data}' ({form.email.data}): 
+
+        {form.message.data}
+        """
+
+        subject = f"Contact Form: {form.subject.data}"
+        msg = Message(body=message,
+                      subject=subject,
+                      recipients=cred.CONTACT_FORM_RECV)
+        print("Created message object.")
+        mail.send(msg)
+        print("Sent email")
+        flash("Email send successfully.", category="success")
 
     if current_user is not None:
         form.email.data = current_user.email
