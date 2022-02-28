@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 683a2f6b174c
+Revision ID: 5d3c61838c37
 Revises: 
-Create Date: 2022-02-14 15:17:54.686058
+Create Date: 2022-02-28 14:30:54.179780
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '683a2f6b174c'
+revision = '5d3c61838c37'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -37,6 +37,7 @@ def upgrade():
     sa.Column('username', sa.String(length=64), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
     sa.Column('pass_hash', sa.String(length=128), nullable=True),
+    sa.Column('role', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_user'))
     )
     with op.batch_alter_table('user', schema=None) as batch_op:
@@ -48,11 +49,13 @@ def upgrade():
     sa.Column('filename', sa.String(length=120), nullable=False),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('folder_name', sa.String(length=120), nullable=True),
     sa.Column('public', sa.Boolean(), nullable=True),
     sa.Column('car_id', sa.Integer(), nullable=True),
     sa.Column('track_id', sa.Integer(), nullable=True),
     sa.Column('fastest_lap_time', sa.Float(), nullable=True),
     sa.Column('likes', sa.Integer(), nullable=True),
+    sa.Column('views', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['car_id'], ['car.id'], name=op.f('fk_file_car_id_car')),
     sa.ForeignKeyConstraint(['track_id'], ['track.id'], name=op.f('fk_file_track_id_track')),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], name=op.f('fk_file_user_id_user')),
