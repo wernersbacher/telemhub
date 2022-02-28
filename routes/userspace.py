@@ -3,9 +3,8 @@ from database import db
 from flask_login import login_user, logout_user, current_user, login_required
 from forms.auth import RegistrationForm, LoginForm, UpdateEmailForm, UpdatePasswordForm
 from models.models import User
-import os
 import config as cfg
-
+from logger import logger_app as logger
 userspace = Blueprint("userspace", __name__)
 
 
@@ -34,6 +33,7 @@ def logout():
 @userspace.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm(request.form)
+    logger.info(f"Current reg enabled state: { cfg.get(cfg.Setting.REGISTRATION_ENABLED)}")
 
     if not cfg.get(cfg.Setting.REGISTRATION_ENABLED):
         flash("Registration is currently disabled.", category="danger")
