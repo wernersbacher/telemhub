@@ -41,6 +41,7 @@ def loadConfig(force=False):
         else:
             config[s.key] = s.def_val
 
+
 def get(setting):
     global config
 
@@ -61,6 +62,8 @@ def refreshConfig():
 
 
 loadConfig()
+logger.info("Loaded config:")
+logger.info(config)
 
 if __name__ == "__main__":
     #loadConfig()

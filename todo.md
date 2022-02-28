@@ -1,4 +1,3 @@
-bug: telemetry geht nicht mehr
 reg close bug
 
 admin page:
