@@ -57,7 +57,7 @@ class File(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    folder_name = db.Column(db.String(120), nullable=False, default=random_dir)
+    folder_name = db.Column(db.String(120), default=random_dir)
 
     public = db.Column(db.Boolean, default=True)
 
