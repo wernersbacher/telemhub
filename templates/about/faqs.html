@@ -1,0 +1,28 @@
+{% extends "_dashboard.html" %}
+{% set active_page = "faqs" %}
+{% block title %} FAQs {% endblock %}
+
+{% block content %}
+<div id="accordion">
+
+    {% for f in faq %}
+    <div class="card">
+        <div class="card-header" id="heading{{ loop.index }}">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                    {{ f[0]|safe }}
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapse{{ loop.index }}" class="collapse" aria-labelledby="heading{{ loop.index }}" data-parent="#accordion">
+            <div class="card-body">
+                {{ f[1]|safe }}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

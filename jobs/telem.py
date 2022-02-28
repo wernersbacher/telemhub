@@ -1,11 +1,7 @@
 import contextlib
 import zipfile
 from os.path import basename
-
-from flask import current_app
 from sqlalchemy.exc import IntegrityError
-
-from helpers.helpers import random_dir
 from models.models import User, File, Car, Track
 from logic import telemetry
 from logic import ldparser as ldp
@@ -30,8 +26,6 @@ def _process_upload(file_path_temp: str, user: User, readme_path: str):
     ldx_path = os.path.splitext(file_path_temp)[0] + ".ldx"
 
     file_name, file_ext = os.path.splitext(file_name_with_ext)
-
-    random_sub_dir = random_dir()
     head, chans = ldp.read_ldfile(file_path_temp)
 
     logger.info("Loaded head and channel from file")
@@ -54,9 +48,9 @@ def _process_upload(file_path_temp: str, user: User, readme_path: str):
 
     # print(ds.laps_times)
     fastest_lap_time = min(ds.laps_times)
-
     if fastest_lap_time < 20:
         logger.error("Fastest lap time is way too short, maybe the file way just empty! Aborting.")
+        return
 
     # print(f"fastest lap was {fastest_lap_time}")
     fastest_lap_ix = ds.laps_times.index(fastest_lap_time)

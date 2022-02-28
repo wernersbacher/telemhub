@@ -117,7 +117,7 @@
 
         <li class="nav-item {{ 'active' if active_page == 'member_telemetry' else '' }}">
             <a class="nav-link" href="{{ url_for('member.telemetry')}}">
-                <i class="bi bi-cloud-plus-fill"></i>
+                <i class="bi bi-graph-up"></i>
                 <span>My Telemetry</span></a>
         </li>
 
@@ -125,6 +125,24 @@
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
         {% endif %}
+
+        <div class="sidebar-heading">
+            About
+        </div>
+
+        <li class="nav-item {{ 'active' if active_page == 'faqs' else '' }}">
+            <a class="nav-link" href="{{ url_for('about.faqs')}}">
+                <i class="bi bi-question-circle-fill"></i>
+                <span>FAQs</span></a>
+        </li>
+        <li class="nav-item {{ 'active' if active_page == 'contact' else '' }}">
+            <a class="nav-link" href="{{ url_for('about.contact')}}">
+                <i class="bi bi-envelope"></i>
+                <span>Contact</span></a>
+        </li>
+
+
+        <hr class="sidebar-divider">
 
         <!-- Sidebar Toggler (Sidebar) -->
         <div class="text-center d-none d-md-inline">

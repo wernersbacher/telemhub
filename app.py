@@ -11,6 +11,7 @@ from flask_wtf.csrf import CSRFProtect
 
 from database import db
 from models.models import User, Track, Car, File, Roles
+from routes.about import about
 from routes.ajax import ajax
 from routes.helpers.admin import TelehubModelView, DashboardView, UserView, FileView
 from routes.info import info
@@ -67,6 +68,7 @@ app.register_blueprint(member)
 app.register_blueprint(userspace)
 app.register_blueprint(ajax)
 app.register_blueprint(info)
+app.register_blueprint(about)
 
 logger.info("Starting Telemhub Flask App.")
 logger.info(f"Configured Files path: {app.config['UPLOADS']}")

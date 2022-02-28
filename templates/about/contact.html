@@ -1,0 +1,24 @@
+{% extends "_dashboard.html" %}
+{% set active_page = "contact" %}
+{% block title %} Contact {% endblock %}
+
+{% block content %}
+
+{% from "_formhelpers.html" import render_field %}
+
+<div style="max-width:800px">
+
+    <form class="user" method="post">
+
+        {{ render_field(form.name, cls="form-control ", errcls="isinvalid", placeholder="Your name") }}
+        {{ render_field(form.email, cls="form-control ", errcls="isinvalid", placeholder="Your Email") }}
+        {{ render_field(form.subject, cls="form-control ", errcls="isinvalid", placeholder="Subject") }}
+        {{ render_field(form.message, cls="form-control ", errcls="isinvalid", placeholder="Message") }}
+        {{ render_field(form.submit, cls="btn btn-primary btn-user btn-block", errcls="isinvalid") }}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+    </form>
+</div>
+
+
+{% endblock %}
