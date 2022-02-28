@@ -1,8 +1,5 @@
-keine 0er zeiten erlauben
-
-lösch logik verschieben auf datei, sodass model mitgelöscht wird? bzw methode delete_files_on_hdd oder so
-
-- contact
+contact
+- uberspace email server config
 
 admin page:
 - roles auswahl übergeben oder zumindest beschreibung dazu
@@ -35,10 +32,3 @@ doofes zeug:
 - cookies? dsgvo
 - impressum
 - download rechte?
-
-struktur:
-- templates verschieben
-
-content
-- how to
-- faqs

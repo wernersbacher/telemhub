@@ -16,11 +16,20 @@ def faqs():
         ("Which games are supported yet?",
          """Currently only Assetto Corsa Competizione. Files from other games might work, but are not officially 
          supported yet."""),
+        ("How do i compare the telemetry?",
+         """
+         When you have downloaded a telemetry file, 
+         just extract it and open it in <a target='_blank' href='https://www.motec.com.au/i2/i2downloads/'>Motec Pro</a>.
+         You can then load your own telemetry file and compare the data.
+         <br/>
+         If you are logged in and uploaded your own data, you can also just use the web telemetry viewer. 
+         It is just for the basics, but can help to find the telemetry data you want much faster. 
+         """),
         ("Where can I find my own telemetry data?",
          """Just open your cars setup and set telemetry laps to a number higher than 0.
                     The files will be automatically created in your Documents folder.
                     You have to upload both the <b>*.ld</b> and <b>*.ldx</b> files."""),
-        ("How can I contribute?",
+        ("How can I contribute to the Telehub project?",
          f"""If you want to help Telehub to get better, <a href='{url_for("about.contact")}'>just reach out to me</a>.""")
     ]
 
