@@ -3,6 +3,8 @@ from enum import Enum
 import yaml
 import time
 
+from logger import logger_app as logger
+
 config = {}
 lastCheck = 0
 
@@ -32,7 +34,7 @@ def loadConfig(force=False):
     # if none found, load example.
     # example will be overwritten on install, while settings.yaml won't.
     if not settings:
-        logging.warning("settings.yaml file was not found or empty, using default values.")
+        logger.warning("settings.yaml file was not found or empty, using default values.")
 
     for s in Setting:
         # print(s.key, s.def_val)
