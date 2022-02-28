@@ -1,4 +1,4 @@
-import logging
+import os
 from enum import Enum
 import yaml
 import time
@@ -10,6 +10,8 @@ lastCheck = 0
 
 RELOAD_TIME = 60  # in seconds, update every hour
 
+CURPATH = os.path.abspath(os.path.dirname(__file__))
+SET_FILE = os.path.join(CURPATH, "settings.yaml")
 
 # keys zur settings.yaml file
 class Setting(Enum):
@@ -26,7 +28,7 @@ def loadConfig(force=False):
     if config and not force:
         return
     try:  # try to open settings yaml
-        with open("settings.yaml", 'r') as f:
+        with open(SET_FILE, 'r') as f:
             settings = yaml.safe_load(f)
     except FileNotFoundError:
         settings = {}

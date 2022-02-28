@@ -33,7 +33,6 @@ def logout():
 @userspace.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm(request.form)
-    logger.info(f"Current reg enabled state: { cfg.get(cfg.Setting.REGISTRATION_ENABLED)}")
 
     if not cfg.get(cfg.Setting.REGISTRATION_ENABLED):
         flash("Registration is currently disabled.", category="danger")
