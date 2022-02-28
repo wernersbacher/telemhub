@@ -84,6 +84,7 @@ def upload():
             if file_name_base in files_ldx and files_ld:
                 file_path_temp = os.path.join(
                     *(current_app.config.get("UPLOADS"), file_name))  # super weird tuple workaround
+                logger.info(f"Current upload directory: {current_app.config.get('UPLOADS')}")
 
                 file_in_db: File = db.session.query(File).filter(and_(File.owner == current_user,
                                                                 File.filename == file_name_base)).first()
