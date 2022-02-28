@@ -2,6 +2,7 @@ import os
 
 from flask import render_template, request, Blueprint, current_app, flash, url_for
 from flask_login import login_required, current_user
+from sqlalchemy import and_
 from werkzeug.utils import secure_filename, redirect
 
 from database import db
@@ -9,9 +10,11 @@ from executor import executor
 
 from forms.uploads import TelemUploadForm
 from jobs.telem import process_upload
-from models.models import User
+from models.models import User, File
 from routes.helpers.files import delete_telemetry
 from routes.helpers.telem import telemetry_filtering
+
+from logger import logger_worker as logger
 
 member = Blueprint("member", __name__)
 
@@ -79,19 +82,21 @@ def upload():
 
             # only save file if corresponding file (ld/ldx) exists
             if file_name_base in files_ldx and files_ld:
-                full_file_path = os.path.join(
-                    *(current_user.get_telemetry_path(), file_name))  # super weird tuple workaround
-                zip_file_path = os.path.splitext(full_file_path)[0] + ".zip"
+                file_path_temp = os.path.join(
+                    *(current_app.config.get("UPLOADS"), file_name))  # super weird tuple workaround
 
-                if os.path.isfile(zip_file_path):
+                file_in_db: File = db.session.query(File).filter(and_(File.owner == current_user,
+                                                                File.filename == file_name_base)).first()
+
+                if file_in_db is not None:
                     flash(f"You have uploaded the file {file_name} already!", category="warning")
                 else:
                     uploaded_files.append(file_name)
-                    print(f"saved file to {full_file_path}")
-                    file.save(full_file_path)
+                    logger.info(f"saved file to {file_path_temp}")
+                    file.save(file_path_temp)
 
                     if file_name.endswith(".ld"):
-                        task_list.append((process_upload, full_file_path, current_user, readme_path))
+                        task_list.append((process_upload, file_path_temp, current_user, readme_path))
 
         # only process data after upload; otherwise errors may appear?
         if task_list:

@@ -8,38 +8,6 @@ from sqlalchemy.exc import IntegrityError
 from database import db
 from models.models import File
 
-from logger import logger_app as logger
-
-
-def delete_telemetry_file(file: File):
-
-    db.session.begin_nested()
-
-    try:    # if files doe not exist anymore (because user got deleted), don't try to delete them
-        parquet_file = file.get_path_parquet()
-        zip_file = file.get_path_zip()
-        if parquet_file:
-            os.remove(parquet_file)
-        if zip_file:
-            os.remove(zip_file)
-
-        db.session.delete(file)
-
-        # delete the files.
-
-        db.session.commit()
-        return True
-    except FileNotFoundError as e:
-        db.session.rollback()
-        logger.error(traceback.format_exc())
-    except IntegrityError as e:
-        db.session.rollback()
-        logger.error(traceback.format_exc())
-    except BaseException as e:
-        logger.error(traceback.format_exc())
-
-    return False
-
 
 def delete_telemetry(delete_id):
     """ deletes a telemetry files if everyhting is ok"""

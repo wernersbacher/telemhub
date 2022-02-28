@@ -1,3 +1,6 @@
+import traceback
+from sqlite3 import IntegrityError
+
 from flask import request, url_for, flash
 from flask_admin import AdminIndexView
 from flask_admin.contrib import sqla
@@ -7,7 +10,6 @@ from wtforms import PasswordField
 
 from forms.auth import CreateUserForm
 from models.models import User, File
-from routes.helpers.files import delete_telemetry_file
 from logger import logger_app as logger
 
 
@@ -50,13 +52,18 @@ class FileView(TelehubModelView):
             self.on_model_delete(model)
             # custom delete logic
             logger.info(f"Trying to delete file {model.filename}")
-            if model.owner is not None:
-                sucess = delete_telemetry_file(model)
-                logger.info(f"file deletion sucess? {sucess}")
-            else:
+
+            try:
+                if not model.delete_files_on_drive():
+                    logger.warning("Files could be deleted on drive!")
                 self.session.delete(model)
                 self.session.commit()
-
+                return True
+            except IntegrityError as e:
+                self.session.rollback()
+                logger.error(traceback.format_exc())
+            except BaseException as e:
+                logger.error(traceback.format_exc())
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 flash("Failed to delete record.")
@@ -100,3 +107,40 @@ class UserView(TelehubModelView):
         except AttributeError:
             pass
 
+    def delete_model(self, model: User):
+        """
+            Delete model.
+            :param model:
+                Model to delete
+        """
+        try:
+            self.on_model_delete(model)
+            # custom delete logic
+            logger.info(f"Trying to delete user {model.username}")
+
+            try:
+                # delete all files from user
+                for file in model.myFiles:
+                    if not file.delete_files_on_drive():
+                        logger.warning(f"File {file.filename} could be deleted on drive!")
+                    self.session.delete(file)
+
+                self.session.delete(model)
+                self.session.commit()
+                return True
+            except IntegrityError as e:
+                self.session.rollback()
+                logger.error(traceback.format_exc())
+            except BaseException as e:
+                logger.error(traceback.format_exc())
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                flash("Failed to delete record.")
+
+            self.session.rollback()
+
+            return False
+        else:
+            self.after_model_delete(model)
+
+        return True

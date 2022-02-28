@@ -2,7 +2,10 @@ import contextlib
 import zipfile
 from os.path import basename
 
+from flask import current_app
 from sqlalchemy.exc import IntegrityError
+
+from helpers.helpers import random_dir
 from models.models import User, File, Car, Track
 from logic import telemetry
 from logic import ldparser as ldp
@@ -21,24 +24,21 @@ def process_upload(file_path: str, user: User, readme_path: str):
         logger.error(traceback.format_exc())
 
 
-def _process_upload(file_path: str, user: User, readme_path: str):
-    logger.info(f" --------- processing file {file_path} in background from user {user.username}")
-    logger.info("1")
-    path_only, file_name_with_ext = os.path.split(file_path)
+def _process_upload(file_path_temp: str, user: User, readme_path: str):
+    logger.info(f" --------- processing file {file_path_temp} in background from user {user.username}")
+    path_only, file_name_with_ext = os.path.split(file_path_temp)
+    ldx_path = os.path.splitext(file_path_temp)[0] + ".ldx"
+
     file_name, file_ext = os.path.splitext(file_name_with_ext)
-    parquet_path = os.path.join(path_only, f"{file_name}.parquet")
-    ldx_path = os.path.splitext(file_path)[0] + ".ldx"
-    zip_path = os.path.splitext(file_path)[0] + ".zip"
 
-    logger.info("Created path names")
-
-    head, chans = ldp.read_ldfile(file_path)
+    random_sub_dir = random_dir()
+    head, chans = ldp.read_ldfile(file_path_temp)
 
     logger.info("Loaded head and channel from file")
 
     if head.event == "AC_LIVE":
         logger.error("Detected wrong ld file, aborting")
-        os.remove(file_path)
+        os.remove(file_path_temp)
         os.remove(ldx_path)
         return
 
@@ -47,7 +47,7 @@ def _process_upload(file_path: str, user: User, readme_path: str):
     # print(head.event)  # car
 
     # read laps from xml files
-    laps = np.array(telemetry.laps(file_path))
+    laps = np.array(telemetry.laps(file_path_temp))
     logger.info("Read laps")
     # create DataStore that is used later to get pandas DataFrame
     ds = telemetry.LDDataStore(chans, laps, freq=20, acc=head.event != 'AC_LIVE')
@@ -106,25 +106,34 @@ def _process_upload(file_path: str, user: User, readme_path: str):
 
     # -------------------------------- FILE
     # print("saving telemetry file to db...")
-    fastest_lap[["speedkmh", "throttle", "brake", "dist_lap", "time_lap"]].to_parquet(path=parquet_path, index=True)
 
     try:
-        logger.info(f"writing file to database SUCEEDED, {file_path}")
+        logger.info(f"writing file to database SUCEEDED, {file_path_temp}")
         file = File(owner=user, car=car, track=track, filename=file_name, fastest_lap_time=fastest_lap_time)
         db.session.add(file)
         db.session.commit()
     except:
-        logger.error(f"writing file to database FAILED, {file_path}")
+        logger.error(f"writing file to database FAILED, {file_path_temp}")
         logger.error(traceback.format_exc())
         with contextlib.suppress(FileNotFoundError):
-            os.remove(file_path)
+            os.remove(file_path_temp)
             os.remove(ldx_path)
-            os.remove(parquet_path)
         return
+
+    parquet_path = file.get_path_parquet()
+    zip_path = file.get_path_zip()
+    # create directories
+    os.makedirs(os.path.dirname(parquet_path), exist_ok=True)
+    os.makedirs(os.path.dirname(zip_path), exist_ok=True)
+    logger.info(f"parquet path: {parquet_path}")
+    logger.info(f"zip_path: {zip_path}")
+
+    # create parquet file
+    fastest_lap[["speedkmh", "throttle", "brake", "dist_lap", "time_lap"]].to_parquet(path=parquet_path, index=True)
 
     # if everything worked well, create zip file
     with zipfile.ZipFile(zip_path, 'w') as zipF:
-        zipF.write(file_path, basename(file_path), compress_type=zipfile.ZIP_DEFLATED)
+        zipF.write(file_path_temp, basename(file_path_temp), compress_type=zipfile.ZIP_DEFLATED)
         zipF.write(ldx_path, basename(ldx_path), compress_type=zipfile.ZIP_DEFLATED)
         logger.info(f"now adding readme file {readme_path}")
         try:
@@ -133,7 +142,7 @@ def _process_upload(file_path: str, user: User, readme_path: str):
             logger.error(traceback.format_exc())
 
     # now delete big raw files!
-    os.remove(file_path)
+    os.remove(file_path_temp)
     os.remove(ldx_path)
 
-    logger.info(f" --------- finished processing file {file_path} in background from user {user.username}")
+    logger.info(f" --------- finished processing file {file_path_temp} in background from user {user.username}")

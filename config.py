@@ -6,7 +6,7 @@ import time
 config = {}
 lastCheck = 0
 
-RELOAD_TIME = 60*60  # in seconds, update every hour
+RELOAD_TIME = 60  # in seconds, update every hour
 
 
 # keys zur settings.yaml file

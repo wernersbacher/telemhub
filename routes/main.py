@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 from flask import Blueprint, render_template, request, flash, url_for, send_from_directory
 from flask_login import current_user
@@ -62,7 +64,9 @@ def download_telem(id):
         return redirect(url_for('main.home'))
 
     try:
-        return send_from_directory(file.owner.get_telemetry_path(), path=file.filename + ".zip", as_attachment=True)
+        file_path = file.get_path_zip()
+        path_only, file_name_with_ext = os.path.split(file_path)
+        return send_from_directory(path_only, path=file_name_with_ext, as_attachment=True)
     except FileNotFoundError:
         flash("Sorry, this telemetry doesn't exist (anymore)!", category="danger")
         return redirect(url_for('main.home'))

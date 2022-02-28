@@ -22,7 +22,7 @@ def telemetry_show(id):
     d2 = None
     if cid > 0:
         file2 = db.session.query(File).filter_by(id=cid).first()
-        if file.track_id == file2.track_id and file != file2:
+        if file2 is not None and file.track_id == file2.track_id and file != file2:
             parquet_path2 = file2.get_path_parquet()
             d2 = pd.read_parquet(parquet_path2)
 

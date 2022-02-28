@@ -45,7 +45,6 @@ def register():
 
         db.session.add(user)
         db.session.commit()
-        os.makedirs(user.get_telemetry_path())  # create user dir
         flash('Registration completed, you can now log in!')
         return redirect(url_for('userspace.login'))
 

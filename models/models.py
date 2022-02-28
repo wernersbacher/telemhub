@@ -1,23 +1,17 @@
-import string
+import traceback
 from enum import Enum
-import random
 
 from flask import current_app
 from datetime import datetime, time
 
-from flask_sqlalchemy import xrange
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from helpers.helpers import length
+from helpers.helpers import length, random_dir
 from loginmanager import login_manager
 from database import db
 from flask_login import UserMixin
 import os
-
-
-def random_dir():
-    return ''.join(random.choice(string.ascii_lowercase) for i in xrange(5))
-
+from logger import logger_app as logger
 
 class Roles(Enum):
     USER = 0
@@ -86,13 +80,24 @@ class File(db.Model):
 
     def get_path_parquet(self):
         if self.owner is not None:
-            return os.path.join(current_app.config.get('PARQUETFILES'), self.folder_name, self.id+".parquet")
+            return os.path.join(current_app.config.get('PARQUETFILES'), self.folder_name, f"{self.filename}{self.id}.parquet")
         return False
 
     def get_path_zip(self):
         if self.owner is not None:
-            return os.path.join(current_app.config.get('TELEFILES'), self.folder_name, self.id+".zip")
+            return os.path.join(current_app.config.get('TELEFILES'), self.folder_name, f"{self.filename}{self.id}.zip")
         return False
+
+    def delete_files_on_drive(self):
+        parquet_file = self.get_path_parquet()
+        zip_file = self.get_path_zip()
+        try:
+            os.remove(parquet_file)
+            os.remove(zip_file)
+            return True
+        except FileNotFoundError:
+            logger.warning(traceback.format_exc())
+            return False
 
     def __repr__(self):
         return '<File {}>'.format(self.filename)
