@@ -60,7 +60,7 @@ def contact():
         print("Sent email")
         flash("Email send successfully.", category="success")
 
-    if current_user is not None:
+    if current_user is not None and current_user.is_authenticated:
         form.email.data = current_user.email
         form.name.data = current_user.username
 
