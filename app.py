@@ -30,7 +30,7 @@ app.secret_key = b'j3nr#+38f8fdeadbeef--w'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + DB_FILE_PATH
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['html_base_path'] = os.path.join(app.static_url_path, '')
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100mb upload limit
+app.config['MAX_CONTENT_LENGTH'] = 200 * 1024 * 1024  # 100mb upload limit
 
 app.config['ADMIN_SET_FILE'] = os.path.join(CURPATH, 'admin.txt')  # users in this file will get admin role on login
 
