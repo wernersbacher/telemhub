@@ -28,6 +28,7 @@ class User(UserMixin, db.Model):
     role = db.Column(db.Integer, default=Roles.USER.value)
 
     myFiles = db.relationship('File', backref='owner', lazy='dynamic')
+    notifications = db.relationship('Notification', backref='owner', lazy='dynamic')
 
     def get_role(self):
         try:
@@ -138,6 +139,23 @@ class Track(db.Model):
 
     def __repr__(self):
         return f'<Track {self.id}, {self.internal_name}>'
+
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    read = db.Column(db.Boolean, default=False)
+
+    title = db.Column(db.Text())
+    message = db.Column(db.Text())
+    category = db.Column(db.Text())
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def get_date(self):
+        return self.timestamp.strftime("%m/%d/%Y, %H:%M")
+
 
 @login_manager.user_loader
 def load_user(user_id):

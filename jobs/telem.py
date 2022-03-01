@@ -1,6 +1,8 @@
 import contextlib
 import zipfile
 from os.path import basename
+
+from flask import url_for
 from sqlalchemy.exc import IntegrityError
 from models.models import User, File, Car, Track
 from logic import telemetry
@@ -11,6 +13,7 @@ import os
 import traceback
 
 from logger import logger_worker as logger
+import notifications
 
 
 def process_upload(file_path: str, user: User, readme_path: str):
@@ -20,7 +23,16 @@ def process_upload(file_path: str, user: User, readme_path: str):
         logger.error(traceback.format_exc())
 
 
+def create_fail_notif(user, file_name, reason):
+    # create success notification
+    notif = notifications.create_notif(type=notifications.TELEM_FAIL, owner=user,
+                                       fargs={"filename": file_name, "reason": reason})
+    db.session.add(notif)
+    db.session.commit()
+
+
 def _process_upload(file_path_temp: str, user: User, readme_path: str):
+    print("calling upload")
     logger.info(f" --------- processing file {file_path_temp} in background from user {user.username}")
     path_only, file_name_with_ext = os.path.split(file_path_temp)
     ldx_path = os.path.splitext(file_path_temp)[0] + ".ldx"
@@ -34,6 +46,7 @@ def _process_upload(file_path_temp: str, user: User, readme_path: str):
         logger.error("Detected wrong ld file, aborting")
         os.remove(file_path_temp)
         os.remove(ldx_path)
+        create_fail_notif(user, file_name, "Wrong game or wrong file format detected.")
         return
 
     # print(type(head))
@@ -50,6 +63,7 @@ def _process_upload(file_path_temp: str, user: User, readme_path: str):
     fastest_lap_time = min(ds.laps_times)
     if fastest_lap_time < 20:
         logger.error("Fastest lap time is way too short, maybe the file way just empty! Aborting.")
+        create_fail_notif(user, file_name, "No valid lap was found. Some files are empty, try to upload a different one.")
         return
 
     # print(f"fastest lap was {fastest_lap_time}")
@@ -106,13 +120,22 @@ def _process_upload(file_path_temp: str, user: User, readme_path: str):
         file = File(owner=user, car=car, track=track, filename=file_name, fastest_lap_time=fastest_lap_time)
         db.session.add(file)
         db.session.commit()
+        logger.info(f"Created file with id {file.id}")
     except:
         logger.error(f"writing file to database FAILED, {file_path_temp}")
         logger.error(traceback.format_exc())
         with contextlib.suppress(FileNotFoundError):
             os.remove(file_path_temp)
             os.remove(ldx_path)
+            create_fail_notif(user, file_name, "Could not create database entry!")
         return
+
+    # create success notification
+    notif = notifications.create_notif(type=notifications.TELEM_SUCCESS, owner=user,
+                                       fargs={"car": car.get_pretty_name(), "track": track.get_pretty_name(), "filename": file_name,
+                                        "show_url": url_for("main.telemetry_show", id=file.id)})
+    db.session.add(notif)
+    db.session.commit()
 
     parquet_path = file.get_path_parquet()
     zip_path = file.get_path_zip()

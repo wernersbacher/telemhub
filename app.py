@@ -6,7 +6,7 @@ from logger import logger_app as logger
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 from database import db
-from models.models import User, Track, Car, File, Roles
+from models.models import User, Track, Car, File, Roles, Notification
 from models.news import News
 from routes.about import about
 from routes.ajax import ajax
@@ -68,6 +68,7 @@ admin.add_view(FileView(db.session))
 admin.add_view(TelehubModelView(Track, db.session))
 admin.add_view(TelehubModelView(Car, db.session))
 admin.add_view(TelehubModelView(News, db.session))
+admin.add_view(TelehubModelView(Notification, db.session))
 
 app.register_blueprint(main)
 app.register_blueprint(member)

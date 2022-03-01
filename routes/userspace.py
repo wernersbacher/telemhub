@@ -4,7 +4,8 @@ from flask_login import login_user, logout_user, current_user, login_required
 from forms.auth import RegistrationForm, LoginForm, UpdateEmailForm, UpdatePasswordForm
 from models.models import User
 import config as cfg
-from logger import logger_app as logger
+from routes.helpers.extensions import render_template_extra
+
 userspace = Blueprint("userspace", __name__)
 
 
@@ -72,4 +73,4 @@ def profile_edit():
     else:
         emailForm.email.data = current_user.email
 
-    return render_template('userspace/edit_profile.html', passwordForm=passwordForm, emailForm=emailForm)
+    return render_template_extra('userspace/edit_profile.html', passwordForm=passwordForm, emailForm=emailForm)

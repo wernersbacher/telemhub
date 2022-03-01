@@ -1,0 +1,33 @@
+{% extends "_dashboard.html" %}
+{% set active_page = "notifs" %}
+{% block title %} Notifications {% endblock %}
+
+{% block content %}
+
+<div class="mb-4 w-100 p-3">
+
+
+
+    <div class="list-group">
+        {% for notif in notifs %}
+        <div class="list-group-item list-group-item-action flex-column align-items-start ">
+            <div class="d-flex w-100 justify-content-between text-{{ notif.category }}">
+                <h5 class="mb-1">
+                    {% if not notif.read %}
+                    <span class="badge badge-primary">NEW</span>
+                    {% endif %}
+                    {{ notif.title }}</h5>
+                <small>{{ notif.get_date() }}</small>
+            </div>
+            <p class="mb-1">{{ notif.message|safe }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+
+
+</div>
+
+
+{% endblock %}
+

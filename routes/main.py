@@ -1,13 +1,11 @@
 import os
-
-import pandas as pd
 from flask import Blueprint, render_template, request, flash, url_for, send_from_directory
-from flask_login import current_user
 from werkzeug.utils import redirect
 import utils
 from database import db
 from models.models import File, Car, Track
 from models.news import News
+from routes.helpers.extensions import render_template_extra
 from routes.helpers.telem import telemetry_filtering
 from sqlalchemy import func
 
@@ -31,15 +29,16 @@ def home():
 
     latest_news = db.session.query(News).first()
 
-    return render_template('main/home.html', top_cars=top_cars, top_tracks=top_tracks, number_of_files=number_of_files,
-                           number_of_views=number_of_views, news=latest_news)
+    return render_template_extra('main/home.html', top_cars=top_cars, top_tracks=top_tracks,
+                                 number_of_files=number_of_files,
+                                 number_of_views=number_of_views, news=latest_news)
 
 
 @main.route('/telemetry')
 def telemetry():
     telem_kwargs = telemetry_filtering(request)
 
-    return render_template('main/telemetry.html', **telem_kwargs)
+    return render_template_extra('main/telemetry.html', **telem_kwargs)
 
 
 @main.route("/telemetry/show/<id>")
@@ -56,7 +55,7 @@ def telemetry_show(id):
     file_up.views = utils.increment_without_error(file_up.views)
     db.session.commit()
 
-    return render_template("main/telemetry_show.html", file=file)
+    return render_template_extra("main/telemetry_show.html", file=file)
 
 
 @main.route("/telemetry/download/<id>")

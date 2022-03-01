@@ -8,6 +8,7 @@ from forms.contact import ContactForm
 import cred
 from mail import mail
 from models.news import News
+from routes.helpers.extensions import render_template_extra
 
 about = Blueprint("about", __name__)
 
@@ -38,7 +39,7 @@ def faqs():
          f"""If you want to help Telehub to get better, <a href='{url_for("about.contact")}'>just reach out to me</a>.""")
     ]
 
-    return render_template("about/faqs.html", faq=FAQ)
+    return render_template_extra("about/faqs.html", faq=FAQ)
 
 
 @about.route('/about/contact', methods=['GET', 'POST'])
@@ -67,7 +68,7 @@ def contact():
         form.email.data = current_user.email
         form.name.data = current_user.username
 
-    return render_template("about/contact.html", form=form)
+    return render_template_extra("about/contact.html", form=form)
 
 
 @about.route('/about/news')
@@ -75,4 +76,4 @@ def news():
 
     newsdb = db.session.query(News).limit(30).all()
 
-    return render_template("about/news.html", news=newsdb)
+    return render_template_extra("about/news.html", news=newsdb)

@@ -1,8 +1,8 @@
 import os
 
-from flask import render_template, request, Blueprint, current_app, flash, url_for
+from flask import request, Blueprint, current_app, flash, url_for
 from flask_login import login_required, current_user
-from sqlalchemy import and_
+from sqlalchemy import and_, desc
 from werkzeug.utils import secure_filename, redirect
 
 from database import db
@@ -10,7 +10,8 @@ from executor import executor
 
 from forms.uploads import TelemUploadForm
 from jobs.telem import process_upload
-from models.models import User, File
+from models.models import User, File, Notification
+from routes.helpers.extensions import render_template_extra
 from routes.helpers.files import delete_telemetry
 from routes.helpers.telem import telemetry_filtering
 
@@ -38,7 +39,21 @@ def telemetry():
 
     telem_kwargs = telemetry_filtering(request, filter_by_user=current_user)
 
-    return render_template('member/telemetry.html', **telem_kwargs)
+    return render_template_extra('member/telemetry.html', **telem_kwargs)
+
+
+@member.route('/member/notifications')
+def notif():
+    """ shows user profile """
+
+    notifs = db.session.query(Notification).filter_by(owner=current_user).order_by(desc(Notification.timestamp)).limit(10).all()
+
+    db.session.query(Notification).filter(
+        and_(Notification.owner == current_user)).update(
+            {Notification.read: True})
+    db.session.commit()
+
+    return render_template_extra("member/notifs.html", notifs=notifs)
 
 
 @member.route('/member/profile/<username>')
@@ -51,7 +66,7 @@ def profile(username):
 
     telem_kwargs = telemetry_filtering(request, filter_by_user=user)
 
-    return render_template("member/profile.html", user=user, **telem_kwargs)
+    return render_template_extra("member/profile.html", user=user, **telem_kwargs)
 
 
 @member.route('/member/upload', methods=['GET', 'POST'])
@@ -75,19 +90,22 @@ def upload():
                      for file in files
                      if secure_filename(file.filename).endswith("ldx")]
 
+        print(files_ldx)
+        print(files_ld)
         # check all files again
         for file in files:
             file_name = secure_filename(file.filename)
             file_name_base = os.path.splitext(file_name)[0]
 
             # only save file if corresponding file (ld/ldx) exists
-            if file_name_base in files_ldx and files_ld:
+            print(f"processing {file_name_base}")
+            if file_name_base in files_ldx and file_name_base in files_ld:
                 file_path_temp = os.path.join(
                     *(current_app.config.get("UPLOADS"), file_name))  # super weird tuple workaround
                 logger.info(f"Current upload directory: {current_app.config.get('UPLOADS')}")
 
                 file_in_db: File = db.session.query(File).filter(and_(File.owner == current_user,
-                                                                File.filename == file_name_base)).first()
+                                                                      File.filename == file_name_base)).first()
 
                 if file_in_db is not None:
                     flash(f"You have uploaded the file {file_name} already!", category="warning")
@@ -104,10 +122,11 @@ def upload():
             for task in task_list:
                 executor.submit(*task)
 
+        print(uploaded_files)
         if uploaded_files:
             flash(f"{len(uploaded_files)} files were uploaded! It might take a few moments for them to show up.",
                   category="success")
         else:
             flash("No files were uploaded, please don't forget to upload both ld and ldx!", category="danger")
 
-    return render_template('member/upload.html', form=form)
+    return render_template_extra('member/upload.html', form=form)

@@ -204,6 +204,18 @@
                     <!-- Nav Item - User Information -->
 
                     {% if current_user.is_authenticated %}
+
+                    <li class="nav-item dropdown no-arrow mx-1">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('member.notif')}}" id="alertsDropdown" role="button">
+                            <i class="bi bi-bell-fill"></i>
+                            <!-- Counter - Alerts -->
+                            {% if notif_count > 0 %}
+                            <span class="badge badge-danger badge-counter">{{ notif_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+
+
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

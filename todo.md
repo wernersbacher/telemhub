@@ -1,4 +1,4 @@
-reg close bug
+mark notifs as read
 
 admin page:
 - roles auswahl übergeben oder zumindest beschreibung dazu
