@@ -1,12 +1,23 @@
 from wtforms import Form, BooleanField, StringField, PasswordField, validators, EmailField, SubmitField
 from flask_wtf import FlaskForm
-from wtforms_validators import AlphaNumeric
+from wtforms_validators import AbstractText
 from flask_login import current_user
 from models.models import User
 
 
+class AlphaNumericSpecial(AbstractText):
+
+    @property
+    def pattern(self):
+        return r"^[-_ a-zA-Z0-9]+$"
+
+    @property
+    def message(self):
+        return "Must only contain alphabets and Numbers."
+
+
 class RegistrationForm(Form):
-    username = StringField('Username', [validators.DataRequired(), validators.Length(min=4, max=25), AlphaNumeric()])
+    username = StringField('Username', [validators.DataRequired(), validators.Length(min=4, max=25), AlphaNumericSpecial()])
     email = EmailField('Email address', [validators.DataRequired(), validators.Email()])
     password = PasswordField('New Password', [
         validators.DataRequired(),
@@ -47,7 +58,7 @@ class RegistrationForm(Form):
 
 
 class CreateUserForm(Form):
-    username = StringField('Username', [validators.DataRequired(), validators.Length(min=4, max=25), AlphaNumeric()])
+    username = StringField('Username', [validators.DataRequired(), validators.Length(min=4, max=25), AlphaNumericSpecial()])
     email = EmailField('Email address', [validators.DataRequired(), validators.Email()])
     password = PasswordField('New Password', [
         validators.DataRequired(),
