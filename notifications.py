@@ -14,7 +14,7 @@ NOTIFS = {
 
     "TELEM_FAIL": {
 
-        "title": "Telemetry converted successfully",
+        "title": "Telemetry conversion failed",
         "msg": """Your telemetry could not be parsed. 
                 File: ({filename})
                 Reason: {reason}

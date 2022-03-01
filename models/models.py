@@ -71,7 +71,7 @@ class File(db.Model):
     views = db.Column(db.Integer, default=0)
 
     def get_upload_date(self):
-        return self.timestamp.strftime("%m/%d/%Y, %H:%M")
+        return self.timestamp.strftime("%d/%m/%Y, %H:%M")
 
     def get_fastest_lap(self):
         ms = int(1000 * (self.fastest_lap_time % 1))*1000
@@ -154,7 +154,7 @@ class Notification(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def get_date(self):
-        return self.timestamp.strftime("%m/%d/%Y, %H:%M")
+        return self.timestamp.strftime("%d/%m/%Y, %H:%M")
 
 
 @login_manager.user_loader
