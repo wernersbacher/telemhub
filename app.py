@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 from database import db
 from models.models import User, Track, Car, File, Roles
+from models.news import News
 from routes.about import about
 from routes.ajax import ajax
 from routes.helpers.admin import TelehubModelView, DashboardView, UserView, FileView
@@ -23,10 +24,6 @@ import cred
 
 CURPATH = os.path.abspath(os.path.dirname(__file__))
 DB_FILE_PATH = os.path.join(CURPATH, 'db', 'app.db')
-
-# create file if not exists
-myfile = Path(DB_FILE_PATH)
-myfile.touch(exist_ok=True)
 
 app = application = Flask(__name__)
 app.secret_key = b'j3nr#+38f8fdeadbeef--w'
@@ -70,6 +67,7 @@ admin.add_view(UserView(db.session))
 admin.add_view(FileView(db.session))
 admin.add_view(TelehubModelView(Track, db.session))
 admin.add_view(TelehubModelView(Car, db.session))
+admin.add_view(TelehubModelView(News, db.session))
 
 app.register_blueprint(main)
 app.register_blueprint(member)

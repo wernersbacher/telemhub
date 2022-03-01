@@ -31,3 +31,6 @@ doofes zeug:
 - cookies? dsgvo
 - impressum
 - download rechte?
+
+db:
+- index optimieren

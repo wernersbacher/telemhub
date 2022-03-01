@@ -1,0 +1,22 @@
+{% extends "_dashboard.html" %}
+{% set active_page = "news" %}
+{% block title %} News {% endblock %}
+
+{% block content %}
+
+
+<div class="list-group">
+    {% for n in news %}
+    <div class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ n.title }}</h5>
+            <small>{{ n.get_date() }}</small>
+        </div>
+        <p class="mb-1">{{ n.message }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+{% endblock %}

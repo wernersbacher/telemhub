@@ -130,6 +130,11 @@
             About
         </div>
 
+        <li class="nav-item {{ 'active' if active_page == 'news' else '' }}">
+            <a class="nav-link" href="{{ url_for('about.news')}}">
+                <i class="bi bi-newspaper"></i>
+                <span>News</span></a>
+        </li>
         <li class="nav-item {{ 'active' if active_page == 'faqs' else '' }}">
             <a class="nav-link" href="{{ url_for('about.faqs')}}">
                 <i class="bi bi-question-circle-fill"></i>

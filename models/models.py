@@ -13,6 +13,7 @@ from flask_login import UserMixin
 import os
 from logger import logger_app as logger
 
+
 class Roles(Enum):
     USER = 0
     ADMIN = 10
@@ -69,7 +70,7 @@ class File(db.Model):
     views = db.Column(db.Integer, default=0)
 
     def get_upload_date(self):
-        return self.timestamp.isoformat()
+        return self.timestamp.strftime("%m/%d/%Y, %H:%M")
 
     def get_fastest_lap(self):
         ms = int(1000 * (self.fastest_lap_time % 1))*1000

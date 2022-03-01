@@ -1,10 +1,13 @@
 from flask import Blueprint, render_template, url_for, request, flash
 from flask_login import current_user
 from flask_mail import Message
+
+from database import db
 from forms.contact import ContactForm
 
 import cred
 from mail import mail
+from models.news import News
 
 about = Blueprint("about", __name__)
 
@@ -65,3 +68,11 @@ def contact():
         form.name.data = current_user.username
 
     return render_template("about/contact.html", form=form)
+
+
+@about.route('/about/news')
+def news():
+
+    newsdb = db.session.query(News).limit(30).all()
+
+    return render_template("about/news.html", news=newsdb)

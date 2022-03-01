@@ -7,6 +7,7 @@ from werkzeug.utils import redirect
 import utils
 from database import db
 from models.models import File, Car, Track
+from models.news import News
 from routes.helpers.telem import telemetry_filtering
 from sqlalchemy import func
 
@@ -28,8 +29,10 @@ def home():
 
     number_of_views = db.session.query(func.sum(File.views)).first()[0]
 
+    latest_news = db.session.query(News).first()
+
     return render_template('main/home.html', top_cars=top_cars, top_tracks=top_tracks, number_of_files=number_of_files,
-                           number_of_views=number_of_views)
+                           number_of_views=number_of_views, news=latest_news)
 
 
 @main.route('/telemetry')
