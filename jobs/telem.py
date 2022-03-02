@@ -57,7 +57,7 @@ def _process_upload(file_path_temp: str, user: User, readme_path: str):
     laps = np.array(telemetry.laps(file_path_temp))
     logger.info("Read laps")
     # create DataStore that is used later to get pandas DataFrame
-    ds = telemetry.LDDataStore(chans, laps, freq=20, acc=head.event != 'AC_LIVE')
+    ds = telemetry.LDDataStore(chans, laps, freq=30, acc=head.event != 'AC_LIVE')
 
     # print(ds.laps_times)
     fastest_lap_time = min(ds.laps_times)
