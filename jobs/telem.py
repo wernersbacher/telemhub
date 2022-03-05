@@ -27,13 +27,15 @@ def create_fail_notif(user, file_name, reason):
     # create success notification
     notif = notifications.create_notif(type=notifications.TELEM_FAIL, owner=user,
                                        fargs={"filename": file_name, "reason": reason})
-    db.session.add(notif)
-    db.session.commit()
+    if not user.is_anon():
+        print("user is not anonym", user.username)
+        db.session.add(notif)
+        db.session.commit()
 
 
 def _process_upload(file_path_temp: str, user: User, readme_path: str):
     print("calling upload")
-    logger.info(f" --------- processing file {file_path_temp} in background from user {user.username}")
+    logger.info(f" --------- processing file {file_path_temp} in background from user {user}")
     path_only, file_name_with_ext = os.path.split(file_path_temp)
     ldx_path = os.path.splitext(file_path_temp)[0] + ".ldx"
 
@@ -76,51 +78,49 @@ def _process_upload(file_path_temp: str, user: User, readme_path: str):
 
     # print(fastest_lap[["speedkmh", "dist_lap", "time_lap"]])
 
+    db.session.begin_nested()
+
+    if not user.is_authenticated:
+        user = db.session.query(User).filter_by(role=1).first()
+
+    # -------------------------------- CAR
+    # try to write car
     car = db.session.query(Car).filter_by(internal_name=head.event).first()
     # check if car exists
     if car is None:
         car = Car(internal_name=head.event)
-
-    # -------------------------------- CAR
-    # try to write car
-    logger.info("trying to add car.")
-    db.session.begin_nested()
-    try:
-        db.session.add(car)
-        db.session.commit()
-    except IntegrityError as e:
-        # if it fails another one has written the car, so now just load
-        db.session.rollback()
-        car = db.session.query(Car).filter_by(internal_name=head.event).first()
-    except BaseException as e:
-        logger.error(traceback.format_exc())
+        try:
+            db.session.add(car)
+            db.session.commit()
+        except IntegrityError as e:
+            # if it fails another one has written the car, so now just load
+            db.session.rollback()
+            car = db.session.query(Car).filter_by(internal_name=head.event).first()
+        except BaseException as e:
+            logger.error(traceback.format_exc())
 
     # -------------------------------- TRACK
-    logger.info("trying to add track.")
     track = db.session.query(Track).filter_by(internal_name=head.venue).first()
     if track is None:
         track = Track(internal_name=head.venue)
-
-    db.session.begin_nested()
-    try:
-        db.session.add(track)
-        db.session.commit()
-    except IntegrityError as e:
-        # if it fails another one has written the track, so now just load
-        db.session.rollback()
-        track = db.session.query(Track).filter_by(internal_name=head.venue).first()
-    except BaseException as e:
-        logger.error(traceback.format_exc())
+        try:
+            db.session.add(track)
+            db.session.commit()
+        except IntegrityError as e:
+            # if it fails another one has written the track, so now just load
+            db.session.rollback()
+            track = db.session.query(Track).filter_by(internal_name=head.venue).first()
+        except BaseException as e:
+            logger.error(traceback.format_exc())
 
     # -------------------------------- FILE
-    # print("saving telemetry file to db...")
 
     try:
-        logger.info(f"writing file to database SUCEEDED, {file_path_temp}")
         file = File(owner=user, car=car, track=track, filename=file_name, fastest_lap_time=fastest_lap_time)
         db.session.add(file)
         db.session.commit()
         logger.info(f"Created file with id {file.id}")
+        logger.info(f"writing file to database SUCEEDED, {file_path_temp}")
     except:
         logger.error(f"writing file to database FAILED, {file_path_temp}")
         logger.error(traceback.format_exc())
@@ -134,8 +134,9 @@ def _process_upload(file_path_temp: str, user: User, readme_path: str):
     notif = notifications.create_notif(type=notifications.TELEM_SUCCESS, owner=user,
                                        fargs={"car": car.get_pretty_name(), "track": track.get_pretty_name(), "filename": file_name,
                                         "show_url": url_for("main.telemetry_show", id=file.id)})
-    db.session.add(notif)
-    db.session.commit()
+    if not user.is_anonymous:
+        db.session.add(notif)
+        db.session.commit()
 
     parquet_path = file.get_path_parquet()
     zip_path = file.get_path_zip()

@@ -1,4 +1,6 @@
 import os
+import traceback
+from sqlite3 import IntegrityError
 
 from flask import request, Blueprint, current_app, flash, url_for
 from flask_login import login_required, current_user
@@ -10,7 +12,7 @@ from executor import executor
 
 from forms.uploads import TelemUploadForm
 from jobs.telem import process_upload
-from models.models import User, File, Notification
+from models.models import User, File, Notification, Roles
 from routes.helpers.extensions import render_template_extra
 from routes.helpers.files import delete_telemetry
 from routes.helpers.telem import telemetry_filtering
@@ -69,8 +71,27 @@ def profile(username):
     return render_template_extra("member/profile.html", user=user, **telem_kwargs)
 
 
+def create_or_load_anon():
+    with db.session.begin_nested():
+        user = db.session.query(User).filter_by(role=1).first()
+        # check if car exists
+        if user is None:
+            user = User(username="anonymous", email="nomail", role=Roles.ANON.value)
+            try:
+                db.session.add(user)
+                db.session.commit()
+            except IntegrityError as e:
+                # if it fails another one has written the car, so now just load
+                db.session.rollback()
+                user = db.session.query(User).filter_by(role=Roles.ANON.value).first()
+            except BaseException as e:
+                db.session.rollback()
+                logger.error(traceback.format_exc())
+
+    return user
+
+
 @member.route('/member/upload', methods=['GET', 'POST'])
-@login_required
 def upload():
     """ TODO: Datein in uploads schieben, dann verarbeiten und dann in telefiles schieben"""
     form = TelemUploadForm()
@@ -90,8 +111,11 @@ def upload():
                      for file in files
                      if secure_filename(file.filename).endswith("ldx")]
 
-        print(files_ldx)
-        print(files_ld)
+        if not current_user.is_authenticated:
+            user = create_or_load_anon()
+        else:
+            user = current_user
+
         # check all files again
         for file in files:
             file_name = secure_filename(file.filename)
@@ -104,7 +128,7 @@ def upload():
                     *(current_app.config.get("UPLOADS"), file_name))  # super weird tuple workaround
                 logger.info(f"Current upload directory: {current_app.config.get('UPLOADS')}")
 
-                file_in_db: File = db.session.query(File).filter(and_(File.owner == current_user,
+                file_in_db: File = db.session.query(File).filter(and_(File.owner == user,
                                                                       File.filename == file_name_base)).first()
 
                 if file_in_db is not None:

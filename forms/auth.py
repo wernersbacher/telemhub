@@ -2,7 +2,7 @@ from wtforms import Form, BooleanField, StringField, PasswordField, validators, 
 from flask_wtf import FlaskForm
 from wtforms_validators import AbstractText
 from flask_login import current_user
-from models.models import User
+from models.models import User, Roles
 
 
 class AlphaNumericSpecial(AbstractText):
@@ -112,6 +112,9 @@ class LoginForm(Form):
         user = User.query.filter_by(email=self.email.data).first()
         if not user:
             self.email.errors.append('Unknown email')
+            return False
+        if user.get_role() == Roles.ANON:
+            self.email.errors.append('Not allowed to login as anon user.')
             return False
         if not user.check_pass(self.password.data):
             self.password.errors.append('Invalid password')

@@ -11,7 +11,8 @@
     </h1>
     Find ACC telemetry files here. Improve your racing
     <p>{% if not current_user.is_authenticated %}
-        To upload your own files, please <a href="{{ url_for('userspace.login')}}">login</a> or <a href="{{ url_for('userspace.register')}}">register</a>!
+        To upload your own files, just <a href="{{ url_for('member.upload')}}">open the upload form</a>!
+        You can also <a href="{{ url_for('userspace.login')}}">login</a> or <a href="{{ url_for('userspace.register')}}">register</a>!
         {% else %}
         To upload your own files, just <a href="{{ url_for('member.upload')}}">upload them</a>!
         {% endif %}

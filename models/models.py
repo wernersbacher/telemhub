@@ -16,6 +16,7 @@ from logger import logger_app as logger
 
 class Roles(Enum):
     USER = 0
+    ANON = 1
     ADMIN = 10
 
 
@@ -42,6 +43,9 @@ class User(UserMixin, db.Model):
 
     def is_admin(self):
         return self.get_role() == Roles.ADMIN
+
+    def is_anon(self):
+        return self.get_role() == Roles.ANON
 
     def set_pass(self, password):
         self.pass_hash = generate_password_hash(password)
