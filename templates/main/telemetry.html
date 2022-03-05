@@ -4,8 +4,12 @@
 
 {% block content %}
 
-{% if files %}
+
 <div class="mb-4 w-100 p-3">
+
+    {% include 'templates/telem/upload_button.html' %}
+
+    {% if files %}
 
     {% set page_dest = 'main.telemetry' %}
     {% set page_kwargs = {} %}
@@ -13,6 +17,7 @@
     {% include 'templates/telem/filter.html' %}
 
     {% include 'templates/telem/pagination.html' %}
+
 
     <div class="table-responsive">
 
@@ -62,9 +67,14 @@
         Showing page {{ files.page }} of {{ files.pages }}
     </p>
 
+    {% endif %}
+
+
+    {% include 'templates/telem/upload_button.html' %}
 
 </div>
-{% endif %}
+
+
 
 
 

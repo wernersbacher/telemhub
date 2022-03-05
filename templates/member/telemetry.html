@@ -4,9 +4,13 @@
 
 {% block content %}
 
-{% if files %}
+
 <div class="mb-4 w-100 p-3">
 
+    {% include 'templates/telem/upload_button.html' %}
+
+
+    {% if files %}
 
     {% set page_dest = 'member.telemetry' %}
     {% set page_kwargs = {} %}
@@ -91,8 +95,11 @@
     </div>
 
 
+    {% endif %}
+
+    {% include 'templates/telem/upload_button.html' %}
+
 </div>
-{% endif %}
 
 
 

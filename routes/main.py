@@ -11,12 +11,17 @@ from sqlalchemy import func
 
 main = Blueprint("main", __name__)
 
-ROWS_PER_PAGE = 10
+ROWS_PER_PAGE = 30
 ALLOWED_EXTENSIONS = {'ld', "ldx"}
 
 
-@main.route('/')
+@main.route("/")
 def home():
+    return redirect(url_for("main.telemetry"))
+
+
+@main.route('/welcome')
+def welcome():
     tracks = db.session.query(Car).all()
     top_cars = sorted(tracks, key=lambda car: car.get_files_number(), reverse=True)[-10:]
 
