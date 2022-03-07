@@ -29,7 +29,7 @@
 {% endmacro %}
 
 
-{% macro render_field(field,cls,errcls) %}
+{% macro render_field(field,cls,errcls,loader=False) %}
 
 {% if field.errors %}
 <div class="form-group">

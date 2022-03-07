@@ -11295,3 +11295,8 @@ body.sidebar-toggled footer.sticky-footer {
 .smalltb>tbody>tr>td, .smalltb>tbody>tr>th, .smalltb>tfoot>tr>td, .smalltb>tfoot>tr>th, .smalltb>thead>tr>td, .smalltb>thead>tr>th {
     padding: 9px 12px;
 }
+
+
+#upload_progress {
+    display: none;
+}

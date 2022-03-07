@@ -3,6 +3,14 @@
 
     $('.toast').toast();
 
+    // upload feedback
+    $("#telem_upload_form").on("submit", function() {
+        console.log("Showing upload hint.")
+        $("#upload_progress").show();
+
+    });
+
+
     $(".compareTelem").on("click", function() {
       $('.toast').toast('show');
       var id = $(this).data('fid');

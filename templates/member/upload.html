@@ -32,11 +32,18 @@ Uploaded files:
     max. 200MB file upload at once supported.
 </div>
 
-<form class='user' style="width: fit-content;" method='post' enctype="multipart/form-data">
+<form class='user' style="width: fit-content;" id="telem_upload_form" method='post' enctype="multipart/form-data">
     <dl>
         {{ render_field(form.files, cls="file-upload", accept=".ld, .ldx",  errcls="isinvalid")  }}
-        {{ render_field(form.submit, cls="btn btn-primary btn-user btn-block") }}
+
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        {{ render_field(form.submit, cls="btn btn-primary btn-user btn-block", loader=True) }}
+
+        <div id="upload_progress" class="form-group">
+            <div>
+                <img src="img/loader.gif" />Upload in progress...
+            </div>
+        </div>
     </dl>
 </form>
 
