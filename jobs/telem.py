@@ -15,6 +15,33 @@ import traceback
 from logger import logger_worker as logger
 import notifications
 
+MIN_TIMES = {
+    "monza": 100,
+    "nurburgring": 110,
+    "spa": 130,
+    "Zolder": 80,
+    # unsure
+    "Imola": 90,
+    "brands_hatch": 78,
+    "Zandvoort": 80,
+    "mount_panorama": 110
+}
+ABS_MIN_TIME = 60
+
+
+def get_threshold(track_name):
+    if track_name in MIN_TIMES:
+        return MIN_TIMES[track_name]
+    return ABS_MIN_TIME
+
+
+def minpass(l, thres):
+    try:
+        min_time = min(x for x in l if x >= thres)
+    except:
+        min_time = 0
+    return min_time
+
 
 def process_upload(file_path: str, user: User, readme_path: str):
     try:
@@ -62,8 +89,8 @@ def _process_upload(file_path_temp: str, user: User, readme_path: str):
     ds = telemetry.LDDataStore(chans, laps, freq=30, acc=head.event != 'AC_LIVE')
 
     # print(ds.laps_times)
-    fastest_lap_time = min(ds.laps_times)
-    if fastest_lap_time < 20:
+    fastest_lap_time = minpass(ds.laps_times, get_threshold(head.venue))
+    if fastest_lap_time == 0:
         logger.error("Fastest lap time is way too short, maybe the file way just empty! Aborting.")
         create_fail_notif(user, file_name, "No valid lap was found. Some files are empty, try to upload a different one.")
         return

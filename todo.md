@@ -1,4 +1,4 @@
-mark notifs as read
+skip laps which are smaller than..
 
 admin page:
 - roles auswahl übergeben oder zumindest beschreibung dazu
